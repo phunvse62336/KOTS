@@ -11,35 +11,31 @@ import {
 import Feather from 'react-native-vector-icons/Feather';
 import PhoneInput from 'react-native-phone-input';
 
-import styles from './SignInScreenStyles';
-import {Images, Colors} from '../../../Themes';
 import {Button} from '../../../Components';
+
+import styles from './RegisterScreenStyles';
+import {Images, Colors} from '../../../Themes';
+
 const {width, height} = Dimensions.get('screen');
 
-export class SignInScreen extends Component {
+export class RegisterScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       phoneNumber: '',
     };
   }
-  login = () => {
+  register = () => {
     if (this.state.phoneNumber !== '' && this.phone.isValidNumber() === true) {
       this.state.phoneNumber = this.state.phoneNumber.replace(/\s/g, '');
 
       this.props.navigation.navigate('ConfirmScreen', {
         phoneNumber: this.state.phoneNumber,
-        action: 'login',
+        action: 'register',
       });
     } else {
       Alert.alert('Số điện thoại không đúng', '');
     }
-  };
-
-  registerNavigate = () => {
-    this.props.navigation.navigate('RegisterScreen', {
-      phoneNumber: this.state.phoneNumber,
-    });
   };
 
   componentDidMount() {
@@ -71,19 +67,11 @@ export class SignInScreen extends Component {
             />
           </View>
           <Button
-            buttonTextStyle={styles.loginTextButton}
-            buttonStyle={styles.loginButton}
-            label="Đăng Nhập"
-            buttonFunc={this.login}
+            buttonTextStyle={styles.registerTextButton}
+            buttonStyle={styles.registerButton}
+            label="Đăng Ký"
+            buttonFunc={this.register}
           />
-          <View style={styles.viewRegister}>
-            <Text style={styles.textRegister}>Bạn chưa có tài khoản? </Text>
-            <Button
-              label="ĐĂNG KÝ"
-              buttonTextStyle={styles.buttonRegister}
-              buttonFunc={this.registerNavigate}
-            />
-          </View>
         </View>
         <View style={styles.viewFooter}>
           <View style={styles.inlineViewFooter}>
@@ -98,4 +86,4 @@ export class SignInScreen extends Component {
   }
 }
 
-export default SignInScreen;
+export default RegisterScreen;

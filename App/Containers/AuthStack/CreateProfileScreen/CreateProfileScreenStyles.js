@@ -1,0 +1,73 @@
+import {StyleSheet, Dimensions} from 'react-native';
+
+const {height, width} = Dimensions.get('window');
+import {Colors} from '../../../Themes';
+export default StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    flex: 1,
+    width,
+  },
+  inputViewContainer: {height: 48, position: 'relative', marginTop: 25},
+  inputViewLabel: {
+    position: 'absolute',
+    backgroundColor: '#fff',
+    top: -15,
+    left: 15,
+    padding: 5,
+    zIndex: 0,
+  },
+  inputView: {
+    flex: 1,
+    borderWidth: 2,
+    borderColor: Colors.appColor,
+    justifyContent: 'flex-end',
+    height: 44,
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    width: width * 0.8,
+    fontSize: 15,
+    color: Colors.appColor,
+    zIndex: -1,
+  },
+  colorText: {color: Colors.appColor},
+  buttonGroupContainer: {marginTop: 15, alignItems: 'flex-start', width: '80%'},
+  buttonGroupView: {
+    height: 36,
+    width: '80%',
+    flexDirection: 'row',
+    marginTop: 9,
+  },
+  selectedButton: {
+    borderColor: Colors.appColor,
+    borderRadius: 10,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingLeft: 14.5,
+    paddingRight: 14.5,
+  },
+  disabledButton: {
+    borderColor: '#cfd1d5',
+    borderRadius: 10,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingLeft: 14.5,
+    paddingRight: 14.5,
+  },
+  selecctedText: {color: Colors.appColor, fontSize: 14},
+  disabledText: {color: '#343438', fontSize: 14},
+  marginButton: {marginLeft: 8},
+  updateButton: {
+    width: width * 0.7,
+    backgroundColor: Colors.appColor,
+    height: 44,
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  updateTextButton: {color: 'white', fontSize: 18},
+});

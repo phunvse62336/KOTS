@@ -4,8 +4,13 @@ import {createStackNavigator} from 'react-navigation-stack';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
+import AuthLoadingScreen from '../Containers/AuthLoadingScreen';
+
 import SignInScreen from '../Containers/AuthStack/SignInScreen/SignInScreen';
 import ConfirmScreen from '../Containers/AuthStack/ConfirmScreen/ConfirmScreen';
+import RegisterScreen from '../Containers/AuthStack/RegisterScreen/RegisterScreen';
+import CreateProfileScreen from '../Containers/AuthStack/CreateProfileScreen/CreateProfileScreen';
+
 import HomeScreen from '../Containers/HomeStack/HomeScreen/HomeScreen';
 
 import styles from './Styles/NavigationStyles';
@@ -27,6 +32,12 @@ const AuthNavigator = createStackNavigator(
         headerTitleStyle: {color: Colors.appColor, fontWeight: 'bold'},
       },
     },
+    RegisterScreen: {
+      screen: RegisterScreen,
+      navigationOptions: {
+        header: null,
+      },
+    },
   },
   {
     // Default config for all screens
@@ -36,6 +47,15 @@ const AuthNavigator = createStackNavigator(
     },
   },
 );
+
+const CreateProfile = createStackNavigator({
+  CreateProfileScreen: {
+    screen: CreateProfileScreen,
+    navigationOptions: {
+      header: null,
+    },
+  },
+});
 
 const HomeTabStack = createStackNavigator({
   HomeScreen: {
@@ -122,9 +142,16 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
   return <FontAwesome5 name={iconName} size={25} color={tintColor} />;
 };
 
-const SwitchNavigation = createSwitchNavigator({
-  AuthNavigator,
-  AppNavigator,
-});
+const SwitchNavigation = createSwitchNavigator(
+  {
+    AuthLoading: AuthLoadingScreen,
+    AuthNavigator,
+    CreateProfile,
+    AppNavigator,
+  },
+  {
+    initialRouteName: 'AuthLoading',
+  },
+);
 
 export default createAppContainer(SwitchNavigation);

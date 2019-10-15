@@ -34,5 +34,5 @@ export default StyleSheet.create({
   registerText: {color: 'white', fontSize: 18},
   viewFooter: {flex: 0.1, justifyContent: 'flex-end'},
   inlineViewFooter: {flexDirection: 'row', marginBottom: 10},
-  textFooter: {color: Colors.appColor},
+  textFooter: {color: Colors.appColor, textDecorationLine: 'underline'},
 });
