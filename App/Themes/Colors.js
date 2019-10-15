@@ -7,6 +7,7 @@ const colors = {
   backgroundTextMine: '#e35fbc',
   backgroundTextUser: '#f3f3f4',
   textChat: '#232324',
+  appColor: '#1F06B6',
 };
 
 export default colors;
