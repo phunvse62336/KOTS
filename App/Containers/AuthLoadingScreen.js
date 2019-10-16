@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class AuthLoadingScreen extends React.Component {
   componentDidMount() {
@@ -27,8 +28,12 @@ export default class AuthLoadingScreen extends React.Component {
   render() {
     return (
       <View>
-        <ActivityIndicator />
-        <StatusBar barStyle="default" />
+        <Spinner
+          visible={true}
+          textStyle={{
+            color: '#FFF',
+          }}
+        />
       </View>
     );
   }
