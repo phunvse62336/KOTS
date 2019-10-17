@@ -7,7 +7,8 @@ import {
   ToastAndroid,
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-
+import firebase from 'react-native-firebase';
+import AsyncStorage from '@react-native-community/async-storage';
 import AppNavigation from '../Navigation/AppNavigation';
 
 export class App extends Component {
@@ -87,6 +88,80 @@ export class App extends Component {
       );
     });
   };
+
+  async getToken() {
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    if (!fcmToken) {
+      fcmToken = await firebase.messaging().getToken();
+      if (fcmToken) {
+        await AsyncStorage.setItem('fcmToken', fcmToken);
+      }
+    }
+  }
+
+  async checkPermission() {
+    const enabled = await firebase.messaging().hasPermission();
+    if (enabled) {
+      this.getToken();
+    } else {
+      this.requestPermission();
+    }
+  }
+
+  async requestPermission() {
+    try {
+      await firebase.messaging().requestPermission();
+      this.getToken();
+    } catch (error) {
+      console.log('permission rejected');
+    }
+  }
+
+  async createNotificationListeners() {
+    firebase.notifications().onNotification(notification => {
+      notification.android.setChannelId('kots-channel').setSound('default');
+      firebase.notifications().displayNotification(notification);
+    });
+  }
+
+  componentDidMount() {
+    const channel = new firebase.notifications.Android.Channel(
+      'kots-channel',
+      'kots channel',
+      firebase.notifications.Android.Importance.Max,
+    );
+    firebase.notifications().android.createChannel(channel);
+    this.checkPermission();
+    this.createNotificationListeners();
+
+    this.notificationOpenedListener = firebase
+      .notifications()
+      .onNotificationOpened((notificationOpen: NotificationOpen) => {
+        // Get the action triggered by the notification being opened
+        const action = notificationOpen.action;
+        // Get information about the notification that was opened
+        const notification: Notification = notificationOpen.notification;
+        var seen = [];
+        alert(
+          JSON.stringify(notification.data, function(key, val) {
+            if (val != null && typeof val === 'object') {
+              if (seen.indexOf(val) >= 0) {
+                return;
+              }
+              seen.push(val);
+            }
+            return val;
+          }),
+        );
+        firebase
+          .notifications()
+          .removeDeliveredNotification(notification.notificationId);
+      });
+  }
+
+  componentWillUnmount() {
+    this.notificationOpenedListener();
+  }
 
   render() {
     return <AppNavigation />;

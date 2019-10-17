@@ -12,27 +12,32 @@ import {
   Alert,
 } from 'react-native';
 import MapView, {Marker, AnimatedRegion} from 'react-native-maps';
-import PubNubReact from 'pubnub-react';
 import Geolocation from 'react-native-geolocation-service';
 import {FloatingAction} from 'react-native-floating-action';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Toast from 'react-native-root-toast';
+import io from 'socket.io-client';
 
 import {Images} from '../../../Themes';
 
 const {width, height} = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
-const LATITUDE = 37.78825;
-const LONGITUDE = -122.4324;
+const LATITUDE = 10.782546;
+const LONGITUDE = 106.650416;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
+const socketURL = 'http://localhost:4333';
+console.ignoredYellowBox = ['Setting a timer'];
 
 export class HomeScreen extends Component {
   constructor(props) {
     super(props);
+    this.socket = io(socketURL);
 
     this.state = {
+      markerCoordinates: [],
       loading: false,
       toast: false,
       latitude: LATITUDE,
@@ -46,28 +51,29 @@ export class HomeScreen extends Component {
     };
 
     // Replace "X" with your PubNub Keys
-    this.pubnub = new PubNubReact({
-      publishKey: 'pub-c-f375e940-4c95-4b08-a2af-01feeb1f80c2',
-      subscribeKey: 'sub-c-10a702e4-efe0-11e9-b715-9abbdb5d0da2',
-    });
-    this.pubnub.init(this);
   }
 
   componentDidMount() {
+    const socket = this.socket;
+    if (!socket) {
+      return;
+    }
+    socket.on('disconnect', () => console.log('DISCONNECT2'));
+    this.socket.on('locationUpdated', locationState => {
+      const newMarkerCoordinates = Object.values(locationState).map(item => ({
+        latitude: item.lat,
+        longitude: item.lng,
+      }));
+      this.setState({markerCoordinates: newMarkerCoordinates});
+      console.log(locationState);
+    });
+    // this.socket.on('updatelocation', socket => {
+    //   console.log('CONNECTED');
+    // });
     this.watchLocation();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.latitude !== prevState.latitude) {
-      this.pubnub.publish({
-        message: {
-          latitude: this.state.latitude,
-          longitude: this.state.longitude,
-        },
-        channel: 'location',
-      });
-    }
-  }
+  componentDidUpdate(prevProps, prevState) {}
 
   componentWillUnmount() {
     Geolocation.clearWatch(this.watchID);
@@ -135,7 +141,22 @@ export class HomeScreen extends Component {
     }
   };
 
+  renderMarkers = markerCoordinates => {
+    return markerCoordinates.map((coord, index) => (
+      <MapView.Marker
+        key={index}
+        image={Images.logoApp}
+        centerOffset={{x: 25, y: 25}}
+        anchor={{x: 0.5, y: 0.5}}
+        coordinate={coord}
+        title={`Truck ${index}`}
+      />
+    ));
+  };
+
   render() {
+    const {region, markerCoordinates} = this.state;
+
     const actions = [
       {
         text: 'Liên Hệ',
@@ -194,6 +215,7 @@ export class HomeScreen extends Component {
               }}
               coordinate={this.state.coordinate}
             />
+            {this.renderMarkers(markerCoordinates)}
           </MapView>
         </View>
         <FloatingAction

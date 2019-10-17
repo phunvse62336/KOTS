@@ -12,7 +12,9 @@ import RegisterScreen from '../Containers/AuthStack/RegisterScreen/RegisterScree
 import CreateProfileScreen from '../Containers/AuthStack/CreateProfileScreen/CreateProfileScreen';
 
 import HomeScreen from '../Containers/HomeStack/HomeScreen/HomeScreen';
-import NewsScreen from '../Containers/HomeStack/NewsScreen/NewsScreen';
+import NewsScreen from '../Containers/NewsStack/NewsScreen/NewsScreen';
+
+import SOSScreen from '../Containers/SOSStack/SOSScreen/SOSScreen';
 
 import styles from './Styles/NavigationStyles';
 import {Colors} from '../Themes';
@@ -77,8 +79,8 @@ const NewsTabStack = createStackNavigator({
 });
 
 const SOSTabStack = createStackNavigator({
-  NewsScreen: {
-    screen: NewsScreen,
+  SOSScreen: {
+    screen: SOSScreen,
     navigationOptions: {
       header: null,
     },

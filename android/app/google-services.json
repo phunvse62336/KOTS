@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "839306361620",
+    "firebase_url": "https://myfirebase-b1225.firebaseio.com",
+    "project_id": "myfirebase-b1225",
+    "storage_bucket": "myfirebase-b1225.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:839306361620:android:55db91ae9e765ab96b2001",
+        "android_client_info": {
+          "package_name": "com.kots"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnRxBrc2PdRykv7iOWA2rhmBAXDQB-O5I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
