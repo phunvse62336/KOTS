@@ -15,6 +15,7 @@ import HomeScreen from '../Containers/HomeStack/HomeScreen/HomeScreen';
 import NewsScreen from '../Containers/NewsStack/NewsScreen/NewsScreen';
 
 import SOSScreen from '../Containers/SOSStack/SOSScreen/SOSScreen';
+import SOSDetailScreen from '../Containers/SOSStack/SOSDetailScreen/SOSDetailScreen';
 
 import styles from './Styles/NavigationStyles';
 import {Colors} from '../Themes';
@@ -85,6 +86,14 @@ const SOSTabStack = createStackNavigator({
       header: null,
     },
   },
+  SOSDetailScreen: {
+    screen: SOSDetailScreen,
+    navigationOptions: {
+      headerTitle: 'Chi Tiết Sự Cố',
+      headerTintColor: Colors.appColor,
+      headerTitleStyle: {color: Colors.appColor, fontWeight: 'bold'},
+    },
+  },
 });
 
 const GroupTabStack = createStackNavigator({
@@ -107,9 +116,9 @@ const MenuTabStack = createStackNavigator({
 
 const AppNavigator = createBottomTabNavigator(
   {
+    SOSTabStack,
     HomeTabStack,
     NewsTabStack,
-    SOSTabStack,
     GroupTabStack,
     MenuTabStack,
   },

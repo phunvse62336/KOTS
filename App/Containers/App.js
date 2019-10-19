@@ -5,11 +5,13 @@ import {
   PermissionsAndroid,
   Platform,
   ToastAndroid,
+  AppState,
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import firebase from 'react-native-firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import AppNavigation from '../Navigation/AppNavigation';
+import NavigationService from '../Services/NavigationService';
 
 export class App extends Component {
   constructor(props) {
@@ -141,18 +143,23 @@ export class App extends Component {
         const action = notificationOpen.action;
         // Get information about the notification that was opened
         const notification: Notification = notificationOpen.notification;
-        var seen = [];
-        alert(
-          JSON.stringify(notification.data, function(key, val) {
-            if (val != null && typeof val === 'object') {
-              if (seen.indexOf(val) >= 0) {
-                return;
-              }
-              seen.push(val);
-            }
-            return val;
-          }),
-        );
+        NavigationService.navigate('SOSDetailScreen', {
+          item: {
+            id: 1,
+            type: 'SOS',
+            date: 'new Date()',
+            name: 'Nguyen Van A',
+            phoneNumber: '+84971930498',
+            location: {
+              latitude: 10.782546,
+              longitude: 106.650416,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            },
+            status: 'Chưa Xử Lý',
+          },
+        });
+
         firebase
           .notifications()
           .removeDeliveredNotification(notification.notificationId);
@@ -164,7 +171,13 @@ export class App extends Component {
   }
 
   render() {
-    return <AppNavigation />;
+    return (
+      <AppNavigation
+        ref={navigatorRef => {
+          NavigationService.setTopLevelNavigator(navigatorRef);
+        }}
+      />
+    );
   }
 }
 

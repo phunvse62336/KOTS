@@ -23,10 +23,10 @@ const CASE = [
     type: 'Contact',
     date: 'new Date()',
     name: 'Nguyen Van B',
-    phoneNumber: '+84971930498',
+    phoneNumber: '+84971930497',
     location: {
-      latitude: 10.782546,
-      longitude: 106.650416,
+      latitude: 10.808143,
+      longitude: 106.678754,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     },
@@ -37,10 +37,10 @@ const CASE = [
     type: 'SOS',
     date: 'new Date()',
     name: 'Nguyen Van C',
-    phoneNumber: '+84971930498',
+    phoneNumber: '+84971930496',
     location: {
-      latitude: 10.782546,
-      longitude: 106.650416,
+      latitude: 10.811137,
+      longitude: 106.675836,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     },
@@ -51,10 +51,10 @@ const CASE = [
     type: 'Contact',
     date: 'new Date()',
     name: 'Nguyen Van C',
-    phoneNumber: '+84971930498',
+    phoneNumber: '+84971930495',
     location: {
-      latitude: 10.782546,
-      longitude: 106.650416,
+      latitude: 10.8009887,
+      longitude: 106.6967738,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     },
@@ -65,7 +65,7 @@ const CASE = [
     type: 'Contact',
     date: 'new Date()',
     name: 'Nguyen Van C',
-    phoneNumber: '+84971930498',
+    phoneNumber: '+84971930494',
     location: {
       latitude: 10.782546,
       longitude: 106.650416,
@@ -84,7 +84,9 @@ export class SOSScreen extends Component {
     };
   }
 
-  _renderItem = ({item, index}) => <CaseView item={item} index={index} />;
+  _renderItem = ({item, index}) => (
+    <CaseView item={item} index={index} navigation={this.props.navigation} />
+  );
 
   render() {
     return (
