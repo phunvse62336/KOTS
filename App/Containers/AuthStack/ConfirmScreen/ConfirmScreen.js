@@ -6,10 +6,12 @@ import {
   Dimensions,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import CodeInput from 'react-native-confirmation-code-input';
 import AsyncStorage from '@react-native-community/async-storage';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import {Images, Colors} from '../../../Themes';
 import styles from './ConfirmScreenStyles';
@@ -21,8 +23,10 @@ export class SignInScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       phoneNumber: this.props.navigation.state.params.phoneNumber,
       action: this.props.navigation.state.params.action,
+      confirmResult: this.props.navigation.state.params.confirmResult,
     };
   }
 
@@ -35,11 +39,41 @@ export class SignInScreen extends Component {
     }
   };
 
+  _onFulfill(code) {
+    this.setState({loading: true});
+
+    const {confirmResult} = this.state;
+    if (confirmResult && code.length) {
+      confirmResult
+        .confirm(code)
+        .then(async user => {
+          this.setState({loading: false});
+          this.confirm();
+          // alert(JSON.stringify(user));
+          // await AsyncStorage.setItem('LOGIN', '1');
+          // this.props.navigation.navigate('AppNavigator');
+        })
+        .catch(error => {
+          this.setState({loading: false});
+          Alert.alert('Confirmation Code', 'Code not match!', [{text: 'OK'}], {
+            cancelable: false,
+          });
+
+          this.refs.codeInput.clear();
+        });
+    }
+  }
+
   componentDidMount() {}
 
   render() {
     return (
       <View style={styles.container}>
+        <Spinner
+          visible={this.state.loading}
+          textStyle={{color: '#fff'}}
+          size="large"
+        />
         <View style={styles.viewHeader}>
           <View style={styles.alignCenter}>
             <Text style={styles.helloText}>Xin Chào Hiệp Sĩ</Text>
@@ -54,10 +88,11 @@ export class SignInScreen extends Component {
         <View style={styles.viewCodeInput}>
           <CodeInput
             ref="codeInput"
-            codeLength={4}
-            space={5}
+            codeLength={6}
+            space={3}
             size={50}
             inputPosition="left"
+            keyboardType="numeric"
             onFulfill={code => this._onFulfill(code)}
             containerStyle={styles.containerCodeInput}
             codeInputStyle={styles.codeInput}

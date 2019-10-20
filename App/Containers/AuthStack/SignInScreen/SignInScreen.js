@@ -10,28 +10,53 @@ import {
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import PhoneInput from 'react-native-phone-input';
+import firebase from 'react-native-firebase';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import styles from './SignInScreenStyles';
 import {Images, Colors} from '../../../Themes';
 import {Button} from '../../../Components';
+// import {APISignIn} from '../../../Services/APILogin';
+// import {MESSAGES} from '../../../Utils/Constants';
+
 const {width, height} = Dimensions.get('screen');
 
 export class SignInScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      phoneNumber: '',
-    };
+    this.state = {loading: false, phoneNumber: '', confirmResult: null};
   }
-  login = () => {
-    if (this.state.phoneNumber !== '' && this.phone.isValidNumber() === true) {
-      this.state.phoneNumber = this.state.phoneNumber.replace(/\s/g, '');
 
-      this.props.navigation.navigate('ConfirmScreen', {
-        phoneNumber: this.state.phoneNumber,
-        action: 'login',
-      });
+  login = async () => {
+    this.setState({loading: true});
+    if (this.state.phoneNumber !== '' && this.phone.isValidNumber() === true) {
+      const phoneNumber = this.state.phoneNumber.replace(/\s/g, '');
+      // let responseStatus = await APISignIn(phoneNumber);
+      // this.setState({loading: false});
+      // if (responseStatus.result === MESSAGES.AUTH.SUCCESS_CODE) {
+      //   alert('có rồi');
+      // } else {
+      //   alert('chưa có');
+      // }
+
+      firebase
+        .auth()
+        .signInWithPhoneNumber(phoneNumber)
+        .then(confirmResult => {
+          this.setState({loading: false});
+          this.props.navigation.navigate('ConfirmScreen', {
+            phoneNumber: this.state.phoneNumber,
+            action: 'login',
+            confirmResult: confirmResult,
+          });
+        })
+        .catch(error => {
+          this.setState({loading: false});
+          alert(error);
+        });
     } else {
+      this.setState({loading: false});
+
       Alert.alert('Số điện thoại không đúng', '');
     }
   };
@@ -49,6 +74,11 @@ export class SignInScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <Spinner
+          visible={this.state.loading}
+          textStyle={{color: '#fff'}}
+          size="large"
+        />
         <View style={styles.viewLogo}>
           <Image source={Images.logoApp} style={styles.logo} />
         </View>

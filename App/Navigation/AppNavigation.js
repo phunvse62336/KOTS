@@ -16,6 +16,7 @@ import NewsScreen from '../Containers/NewsStack/NewsScreen/NewsScreen';
 
 import SOSScreen from '../Containers/SOSStack/SOSScreen/SOSScreen';
 import SOSDetailScreen from '../Containers/SOSStack/SOSDetailScreen/SOSDetailScreen';
+import SOSMessageScreen from '../Containers/SOSStack/SOSMessageScreen/SOSMessageScreen';
 
 import styles from './Styles/NavigationStyles';
 import {Colors} from '../Themes';
@@ -116,9 +117,9 @@ const MenuTabStack = createStackNavigator({
 
 const AppNavigator = createBottomTabNavigator(
   {
-    SOSTabStack,
     HomeTabStack,
     NewsTabStack,
+    SOSTabStack,
     GroupTabStack,
     MenuTabStack,
   },

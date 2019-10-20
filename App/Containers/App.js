@@ -13,6 +13,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import AppNavigation from '../Navigation/AppNavigation';
 import NavigationService from '../Services/NavigationService';
 
+import {NOTIFICATION_CHANNEL} from '../Utils/Constants';
+
 export class App extends Component {
   constructor(props) {
     super(props);
@@ -121,14 +123,16 @@ export class App extends Component {
 
   async createNotificationListeners() {
     firebase.notifications().onNotification(notification => {
-      notification.android.setChannelId('kots-channel').setSound('default');
+      notification.android
+        .setChannelId(NOTIFICATION_CHANNEL)
+        .setSound('default');
       firebase.notifications().displayNotification(notification);
     });
   }
 
   componentDidMount() {
     const channel = new firebase.notifications.Android.Channel(
-      'kots-channel',
+      NOTIFICATION_CHANNEL,
       'kots channel',
       firebase.notifications.Android.Importance.Max,
     );

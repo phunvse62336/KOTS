@@ -14,7 +14,7 @@ export default StyleSheet.create({
     flex: 0.6,
     alignItems: 'center',
   },
-  containerCodeInput: {marginTop: 30},
+  containerCodeInput: {marginTop: 20},
   codeInput: {
     borderWidth: 1.5,
     borderRadius: 5,
