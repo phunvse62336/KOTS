@@ -10,6 +10,9 @@ import MapView, {Marker, Callout, AnimatedRegion} from 'react-native-maps';
 import Geocoder from 'react-native-geocoder';
 
 import {CustomCallout} from '../../../Components';
+
+import styles from './SOSDetailScreenStyles';
+
 const {width, height} = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
@@ -93,56 +96,17 @@ export class SOSDetailScreen extends Component {
             </Marker>
           )}
         </MapView>
-        <View
-          style={{
-            height: 100,
-            backgroundColor: 'white',
-            flexDirection: 'row',
-            justifyContent: 'space-evenly',
-            alignItems: 'center',
-            width: width,
-            borderTopWidth: 2,
-            borderBottomWidth: 2,
-          }}>
-          <TouchableOpacity
-            onPress={this.joinCase}
-            style={{
-              height: 44,
-              width: 100,
-              backgroundColor: '#0FC277',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 10,
-            }}>
-            <Text style={{fontSize: 15, color: 'white'}}>Tham Gia</Text>
+        <View style={styles.viewButton}>
+          <TouchableOpacity onPress={this.joinCase} style={styles.joinButton}>
+            <Text style={styles.buttonText}>Tham Gia</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this.ignore}
-            style={{
-              height: 44,
-              width: 100,
-              backgroundColor: 'red',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 10,
-            }}>
-            <Text style={{fontSize: 15, color: 'white'}}>Từ Chối</Text>
+          <TouchableOpacity onPress={this.ignore} style={styles.ignoreButton}>
+            <Text style={styles.buttonText}>Từ Chối</Text>
           </TouchableOpacity>
         </View>
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
-});
 
 export default SOSDetailScreen;

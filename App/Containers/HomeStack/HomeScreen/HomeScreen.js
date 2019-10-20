@@ -19,7 +19,7 @@ import Toast from 'react-native-root-toast';
 import io from 'socket.io-client';
 
 import {Images} from '../../../Themes';
-
+import styles from './HomeScreenStyles';
 const {width, height} = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
@@ -231,16 +231,5 @@ export class HomeScreen extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
-});
 
 export default HomeScreen;
