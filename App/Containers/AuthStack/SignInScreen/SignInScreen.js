@@ -16,8 +16,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import styles from './SignInScreenStyles';
 import {Images, Colors} from '../../../Themes';
 import {Button} from '../../../Components';
-// import {APISignIn} from '../../../Services/APILogin';
-// import {MESSAGES} from '../../../Utils/Constants';
+import {APIFindKnight} from '../../../Services/APIFindKnight';
+import {MESSAGES} from '../../../Utils/Constants';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -31,29 +31,36 @@ export class SignInScreen extends Component {
     this.setState({loading: true});
     if (this.state.phoneNumber !== '' && this.phone.isValidNumber() === true) {
       const phoneNumber = this.state.phoneNumber.replace(/\s/g, '');
-      // let responseStatus = await APISignIn(phoneNumber);
+      // let response = await fetch('http://171.244.3.182/api/v1/Video');
+      // let responseJson = await response.json();
       // this.setState({loading: false});
-      // if (responseStatus.result === MESSAGES.AUTH.SUCCESS_CODE) {
+
+      // if (responseJson.status === 'SUCCESS') {
       //   alert('có rồi');
       // } else {
       //   alert('chưa có');
       // }
-
-      firebase
-        .auth()
-        .signInWithPhoneNumber(phoneNumber)
-        .then(confirmResult => {
-          this.setState({loading: false});
-          this.props.navigation.navigate('ConfirmScreen', {
-            phoneNumber: this.state.phoneNumber,
-            action: 'login',
-            confirmResult: confirmResult,
+      let responseStatus = await APIFindKnight(phoneNumber);
+      if (responseStatus.result === MESSAGES.AUTH.SUCCESS_CODE) {
+        firebase
+          .auth()
+          .signInWithPhoneNumber(phoneNumber)
+          .then(confirmResult => {
+            this.setState({loading: false});
+            this.props.navigation.navigate('ConfirmScreen', {
+              phoneNumber: this.state.phoneNumber,
+              action: 'login',
+              confirmResult: confirmResult,
+            });
+          })
+          .catch(error => {
+            this.setState({loading: false});
+            alert(error);
           });
-        })
-        .catch(error => {
-          this.setState({loading: false});
-          alert(error);
-        });
+      } else {
+        this.setState({loading: false});
+        alert('Số điện thoại chưa được đăng ký!!!');
+      }
     } else {
       this.setState({loading: false});
 

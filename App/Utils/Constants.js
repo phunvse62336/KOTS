@@ -7,6 +7,6 @@ export const MESSAGES = {
 
 export const NOTIFICATION_CHANNEL = 'kots-channel';
 
-export const BASE_URL = 'http://192.168.102.108/kots/public/api/';
+export const BASE_URL = 'https://kots.herokuapp.com/api/';
 
 export const FIND_KNIGHT_API = BASE_URL + 'findKnight';
