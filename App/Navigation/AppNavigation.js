@@ -12,7 +12,9 @@ import RegisterScreen from '../Containers/AuthStack/RegisterScreen/RegisterScree
 import CreateProfileScreen from '../Containers/AuthStack/CreateProfileScreen/CreateProfileScreen';
 
 import HomeScreen from '../Containers/HomeStack/HomeScreen/HomeScreen';
+
 import NewsScreen from '../Containers/NewsStack/NewsScreen/NewsScreen';
+import NewsDetailScreen from '../Containers/NewsStack/NewsDetailScreen/NewsDetailScreen';
 
 import SOSScreen from '../Containers/SOSStack/SOSScreen/SOSScreen';
 import SOSDetailScreen from '../Containers/SOSStack/SOSDetailScreen/SOSDetailScreen';
@@ -76,6 +78,14 @@ const NewsTabStack = createStackNavigator({
     screen: NewsScreen,
     navigationOptions: {
       header: null,
+    },
+  },
+  NewsDetailScreen: {
+    screen: NewsDetailScreen,
+    navigationOptions: {
+      headerTitle: 'Chi tiết bài báo',
+      headerTintColor: Colors.appColor,
+      headerTitleStyle: {color: Colors.appColor, fontWeight: 'bold'},
     },
   },
 });

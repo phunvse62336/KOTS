@@ -1,10 +1,16 @@
-import {StyleSheet, Dimensions} from 'react-native';
-
-import {Colors} from '../../../Themes';
+import React, {Component} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  StyleSheet,
+} from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 
-export default StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -22,10 +28,6 @@ export default StyleSheet.create({
     flex: 0.6,
     width: width,
   },
-  viewFlat: {
-    flex: 0.6,
-    width: width,
-  },
   textOverImageColor: {
     fontSize: 18,
     color: '#ffffff',
@@ -38,8 +40,6 @@ export default StyleSheet.create({
     right: 0,
     bottom: 0,
     paddingLeft: 10,
-    paddingRight: 10,
-
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
@@ -73,3 +73,29 @@ export default StyleSheet.create({
     flex: 0.2,
   },
 });
+
+export default class News extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  newsDetail = () => {
+    const {item, navigation} = this.props;
+    navigation.navigate('NewsDetailScreen', {item: item});
+  };
+
+  render() {
+    const {item} = this.props;
+    return (
+      <TouchableOpacity style={styles.newsContainer} onPress={this.newsDetail}>
+        <View style={styles.newsImageContainer}>
+          <Image style={styles.newsImage} source={{uri: item.image}} />
+        </View>
+        <View style={styles.newsDescription}>
+          <Text style={styles.topDescription}>{item.description}</Text>
+          <Text style={styles.bottomDescription}> {item.date} </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+}
