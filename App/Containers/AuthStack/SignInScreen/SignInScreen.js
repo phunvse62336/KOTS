@@ -41,7 +41,7 @@ export class SignInScreen extends Component {
       //   alert('chưa có');
       // }
       let responseStatus = await APIFindKnight(phoneNumber);
-      if (responseStatus.result === MESSAGES.AUTH.SUCCESS_CODE) {
+      if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
         firebase
           .auth()
           .signInWithPhoneNumber(phoneNumber)

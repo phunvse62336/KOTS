@@ -1,7 +1,11 @@
 import React, {Component} from 'react';
 import {Text, View, FlatList} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import {HeaderUI, CaseView} from '../../../Components';
+import {MESSAGES} from '../../../Utils/Constants';
+import {APIGetCase} from '../../../Services/APIGetCase';
 
 const CASE = [
   {
@@ -79,10 +83,23 @@ const CASE = [
 export class SOSScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      case: CASE,
-    };
+    this.state = {spinner: true, case: [], phoneNumber: ''};
   }
+
+  componentDidMount = async () => {
+    let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
+    let responseStatus = await APIGetCase(phoneNumber);
+
+    if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
+      console.log(JSON.stringify(responseStatus));
+      this.setState({case: responseStatus.data, spinner: false});
+    } else {
+      this.setState({
+        spinner: false,
+      });
+      alert('Vui lòng thử lại sau!!!!');
+    }
+  };
 
   _renderItem = ({item, index}) => (
     <CaseView item={item} index={index} navigation={this.props.navigation} />
@@ -92,12 +109,21 @@ export class SOSScreen extends Component {
     return (
       <View style={{flex: 1, alignItems: 'center'}}>
         <HeaderUI title="Danh Sách Sự Cố" />
-        <FlatList
-          data={CASE}
-          extraData={this.state}
-          showsVerticalScrollIndicator={false}
-          renderItem={this._renderItem}
-        />
+        {this.state.spinner === true ? (
+          <Spinner
+            visible={this.state.spinner}
+            textContent={'Đang Xử Lý'}
+            textStyle={{color: '#fff'}}
+            size="large"
+          />
+        ) : (
+          <FlatList
+            data={this.state.case}
+            extraData={this.state}
+            showsVerticalScrollIndicator={false}
+            renderItem={this._renderItem}
+          />
+        )}
       </View>
     );
   }

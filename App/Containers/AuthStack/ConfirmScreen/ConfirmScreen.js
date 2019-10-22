@@ -33,6 +33,8 @@ export class SignInScreen extends Component {
   confirm = async () => {
     if (this.state.action === 'login') {
       await AsyncStorage.setItem('LOGIN', '1');
+      await AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
+
       this.props.navigation.navigate('AppNavigator');
     } else {
       this.props.navigation.navigate('CreateProfile');

@@ -105,6 +105,14 @@ const SOSTabStack = createStackNavigator({
       headerTitleStyle: {color: Colors.appColor, fontWeight: 'bold'},
     },
   },
+  SOSMessageScreen: {
+    screen: SOSMessageScreen,
+    navigationOptions: {
+      headerTitle: 'Chi Tiết Sự Cố',
+      headerTintColor: Colors.appColor,
+      headerTitleStyle: {color: Colors.appColor, fontWeight: 'bold'},
+    },
+  },
 });
 
 const GroupTabStack = createStackNavigator({

@@ -26,8 +26,12 @@ export class SOSDetailScreen extends Component {
     this.state = {
       isMapReady: false,
       item: this.props.navigation.state.params.item,
-      latitude: this.props.navigation.state.params.item.location.latitude,
-      longitude: this.props.navigation.state.params.item.location.longitude,
+      latitude: parseFloat(
+        this.props.navigation.state.params.item.startLatitude,
+      ),
+      longitude: parseFloat(
+        this.props.navigation.state.params.item.startLongitude,
+      ),
       address: '',
     };
   }
@@ -56,8 +60,12 @@ export class SOSDetailScreen extends Component {
       .catch(err => console.log(err));
   };
 
+  joinMessage = () => {
+    this.props.navigation.navigate('SOSMessageScreen');
+  };
+
   joinCase = () => {
-    alert('Tham gia');
+    this.props.navigation.navigate('SOSMessageScreen');
   };
 
   ignore = () => {
@@ -88,22 +96,32 @@ export class SOSDetailScreen extends Component {
               <Callout tooltip>
                 <CustomCallout>
                   <Text style={{fontSize: 18}}>Thông tin tín hiệu</Text>
-                  <Text>Người gửi: {this.state.item.name}</Text>
+                  <Text>Người gửi: {this.state.item.user.name}</Text>
                   <Text>Vị trí: {this.state.address}</Text>
-                  <Text>Liên hệ: {this.state.item.phoneNumber}</Text>
+                  <Text>Liên hệ: {this.state.item.user.id}</Text>
                 </CustomCallout>
               </Callout>
             </Marker>
           )}
         </MapView>
-        <View style={styles.viewButton}>
-          <TouchableOpacity onPress={this.joinCase} style={styles.joinButton}>
-            <Text style={styles.buttonText}>Tham Gia</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.ignore} style={styles.ignoreButton}>
-            <Text style={styles.buttonText}>Từ Chối</Text>
-          </TouchableOpacity>
-        </View>
+        {this.state.item.status === 'Chưa Xử Lý' ? (
+          <View style={styles.viewButton}>
+            <TouchableOpacity onPress={this.joinCase} style={styles.joinButton}>
+              <Text style={styles.buttonText}>Tham Gia</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.ignore} style={styles.ignoreButton}>
+              <Text style={styles.buttonText}>Từ Chối</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.viewButton}>
+            <TouchableOpacity
+              onPress={this.joinMessage}
+              style={styles.joinButton}>
+              <Text style={styles.buttonText}>Trò Chuyện</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     );
   }

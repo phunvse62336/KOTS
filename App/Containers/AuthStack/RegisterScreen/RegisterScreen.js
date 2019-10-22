@@ -33,7 +33,7 @@ export class RegisterScreen extends Component {
     if (this.state.phoneNumber !== '' && this.phone.isValidNumber() === true) {
       const phoneNumber = this.state.phoneNumber.replace(/\s/g, '');
       let responseStatus = await APIFindKnight(phoneNumber);
-      if (responseStatus.result !== MESSAGES.AUTH.SUCCESS_CODE) {
+      if (responseStatus.result !== MESSAGES.CODE.SUCCESS_CODE) {
         firebase
           .auth()
           .signInWithPhoneNumber(phoneNumber)
