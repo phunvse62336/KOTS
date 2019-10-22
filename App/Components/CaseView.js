@@ -27,8 +27,11 @@ export class CaseView extends Component {
   };
 
   viewDetail = () => {
-    const {item, navigation} = this.props;
-    navigation.navigate('SOSDetailScreen', {item: item});
+    const {item, navigation, phoneNumber} = this.props;
+    navigation.navigate('SOSDetailScreen', {
+      item: item,
+      phoneNumber: phoneNumber,
+    });
   };
 
   renderStatus = param => {

@@ -8,8 +8,10 @@ import {
 } from 'react-native';
 import MapView, {Marker, Callout, AnimatedRegion} from 'react-native-maps';
 import Geocoder from 'react-native-geocoder';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import {MESSAGES} from '../../../Utils/Constants';
+import {APIConfirmCase} from '../../../Services/APIConfirmCase';
 
 import {CustomCallout} from '../../../Components';
 
@@ -26,8 +28,10 @@ export class SOSDetailScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      spinner: false,
       isMapReady: false,
       item: this.props.navigation.state.params.item,
+      phoneNumber: this.props.navigation.state.params.phoneNumber,
       latitude: parseFloat(
         this.props.navigation.state.params.item.startLatitude,
       ),
@@ -63,11 +67,40 @@ export class SOSDetailScreen extends Component {
   };
 
   joinMessage = () => {
-    this.props.navigation.navigate('SOSMessageScreen');
+    const {phoneNumber, item} = this.state;
+
+    this.props.navigation.navigate('SOSMessageScreen', {
+      item: item,
+      phoneNumber: phoneNumber,
+    });
   };
 
-  joinCase = () => {
-    this.props.navigation.navigate('SOSMessageScreen');
+  joinCase = async () => {
+    const {phoneNumber, item} = this.state;
+    this.setState({spinner: true});
+    let responseStatus = await APIConfirmCase(phoneNumber, item.id);
+    if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
+      console.log(JSON.stringify(responseStatus));
+      this.setState(prevState => ({
+        case: responseStatus.data,
+        spinner: false,
+        phoneNumber: phoneNumber,
+        item: {
+          ...prevState.item, // keep all other key-value pairs
+          status: 1,
+        },
+      }));
+      this.props.navigation.navigate('SOSMessageScreen', {
+        item: item,
+        phoneNumber: phoneNumber,
+      });
+    } else {
+      this.setState({
+        spinner: false,
+        phoneNumber: phoneNumber,
+      });
+      alert('Vui lòng thử lại sau!!!!');
+    }
   };
 
   ignore = () => {
@@ -82,6 +115,12 @@ export class SOSDetailScreen extends Component {
     const {longitude, latitude} = this.state;
     return (
       <View style={styles.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Đang Xử Lý'}
+          textStyle={{color: '#fff'}}
+          size="large"
+        />
         <MapView
           style={styles.map}
           showUserLocation

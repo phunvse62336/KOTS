@@ -25,3 +25,7 @@ export const FIND_KNIGHT_API = BASE_URL + 'findKnight';
 export const SEND_SOS_API = BASE_URL + 'sendCase';
 
 export const GET_CASE_API = BASE_URL + 'getCase';
+
+export const CONFIRM_CASE_API = BASE_URL + 'confirmCase';
+
+export const CLOSE_CASE_API = BASE_URL + 'closeCase';

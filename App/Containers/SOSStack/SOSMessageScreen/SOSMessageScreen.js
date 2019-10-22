@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Text, View, Platform, TouchableOpacity} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {GiftedChat, Bubble, SystemMessage} from 'react-native-gifted-chat';
-import Menu, {MenuItem, MenuDivider} from 'react-native-material-menu';
+import Geolocation from 'react-native-geolocation-service';
 
 import {HeaderMenu} from '../../../Components';
 import {Colors} from '../../../Themes';
@@ -10,12 +10,21 @@ import {Colors} from '../../../Themes';
 import messages from './messages';
 
 export class SOSMessageScreen extends Component {
-  static navigationOptions = ({navigation}) => ({
-    headerTitle: 'Sự cố #321',
-    headerTintColor: Colors.appColor,
-    headerTitleStyle: {color: Colors.appColor, fontWeight: 'bold'},
-    headerRight: <HeaderMenu />,
-  });
+  static navigationOptions = ({navigation}) => {
+    const {params} = navigation.state;
+    return {
+      headerTitle: 'Sự cố #321',
+      headerTintColor: Colors.appColor,
+      headerTitleStyle: {color: Colors.appColor, fontWeight: 'bold'},
+      headerRight: (
+        <HeaderMenu
+          item={navigation.getParam('item', 'abc')}
+          phoneNumber={params ? navigation.state.params.phoneNumber : 'abc'}
+          navigation={navigation}
+        />
+      ),
+    };
+  };
 
   constructor(props) {
     super(props);
@@ -26,14 +35,43 @@ export class SOSMessageScreen extends Component {
       loadEarlier: true,
       typingText: null,
       isLoadingEarlier: false,
+      item: this.props.navigation.state.params.item,
+      phoneNumber: this.props.navigation.state.params.phoneNumber,
+      latitude: '',
+      longitude: '',
     };
   }
 
   componentDidMount() {
+    this.watchLocation();
     this.setState({
       messages: messages,
     });
   }
+
+  componentWillUnmount() {
+    Geolocation.clearWatch(this.watchID);
+  }
+
+  watchLocation = () => {
+    this.watchID = Geolocation.getCurrentPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        console.log('item ' + JSON.stringify(position.coords));
+
+        this.setState({
+          latitude,
+          longitude,
+        });
+      },
+      error => {
+        // See error code charts below.
+        console.log(error.code, error.message);
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    );
+  };
+
   onSend = (messages = []) => {
     const step = this.state.step + 1;
     this.setState(previousState => {

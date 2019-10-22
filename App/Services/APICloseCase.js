@@ -1,15 +1,21 @@
-import {SEND_SOS_API} from '../Utils/Constants';
+import {CLOSE_CASE_API} from '../Utils/Constants';
 import axios from 'axios';
 
-export const APISendSOS = async (phoneNumber, longitude, latitude) => {
+export const APICloseCase = async (
+  phoneNumber,
+  longitude,
+  latitude,
+  status,
+  caseId,
+) => {
   try {
     let response = await axios
-      .post(SEND_SOS_API, {
+      .post(CLOSE_CASE_API, {
         phone: phoneNumber,
-        message: 'Help me',
+        status: status,
         longitude: longitude,
         latitude: latitude,
-        type: 2,
+        caseId: caseId,
       })
       .then(res => {
         console.log(res);

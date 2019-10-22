@@ -17,7 +17,8 @@ const ApplicationStyles = {
     justifyContent: 'center',
     paddingLeft: 16,
     paddingRight: 15,
-    elevation: 1,
+    elevation: 2,
+    backgroundColor: 'white',
   },
   buttonCaseView: {
     width: width * 0.9,

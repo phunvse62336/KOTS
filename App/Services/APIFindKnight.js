@@ -1,18 +1,21 @@
 import {FIND_KNIGHT_API} from '../Utils/Constants';
+import axios from 'axios';
 
 export const APIFindKnight = async phoneNumber => {
   try {
-    let response = await fetch(FIND_KNIGHT_API, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    let response = await axios
+      .post(FIND_KNIGHT_API, {
         phone: phoneNumber,
-      }),
-    });
-    let responseJson = await response.json();
-    return responseJson;
+      })
+      .then(res => {
+        console.log(res);
+        return res.data;
+      })
+      .catch(err => {
+        console.log(err);
+        return {result: 3000, data: null};
+      });
+    return response;
 
     // let response = await fetch(
     //   'https://facebook.github.io/react-native/movies.json',

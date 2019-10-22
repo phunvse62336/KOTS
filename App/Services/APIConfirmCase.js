@@ -1,15 +1,14 @@
-import {SEND_SOS_API} from '../Utils/Constants';
+import {CONFIRM_CASE_API} from '../Utils/Constants';
 import axios from 'axios';
 
-export const APISendSOS = async (phoneNumber, longitude, latitude) => {
+export const APIConfirmCase = async (phoneNumber, caseId) => {
   try {
+    console.log(phoneNumber + ' abc ' + caseId);
     let response = await axios
-      .post(SEND_SOS_API, {
+      .post(CONFIRM_CASE_API, {
         phone: phoneNumber,
-        message: 'Help me',
-        longitude: longitude,
-        latitude: latitude,
-        type: 2,
+        status: 1,
+        caseId: caseId,
       })
       .then(res => {
         console.log(res);

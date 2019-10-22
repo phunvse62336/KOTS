@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, FlatList} from 'react-native';
+import {Text, View, FlatList, RefreshControl} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -83,27 +83,77 @@ const CASE = [
 export class SOSScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {spinner: true, case: [], phoneNumber: ''};
+    this.state = {
+      spinner: true,
+      case: [],
+      phoneNumber: '',
+      isRefreshing: false, //for pull to refresh
+      messageRefresh: this.props.navigation.getParam('otherParam', ''),
+    };
   }
 
   componentDidMount = async () => {
     let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
     let responseStatus = await APIGetCase(phoneNumber);
+    console.log('BEFORE ' + JSON.stringify(responseStatus));
 
     if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
       console.log(JSON.stringify(responseStatus));
-      this.setState({case: responseStatus.data, spinner: false});
+      this.setState({
+        case: responseStatus.data,
+        spinner: false,
+        phoneNumber: phoneNumber,
+      });
     } else {
       this.setState({
         spinner: false,
+        phoneNumber: phoneNumber,
       });
       alert('Vui lòng thử lại sau!!!!');
     }
+    const {navigation} = this.props;
+    //Adding an event listner om focus
+    //So whenever the screen will have focus it will set the state to zero
+    this.focusListener = navigation.addListener('didFocus', () =>
+      this.onRefresh(),
+    );
   };
 
+  componentWillUnmount() {
+    this.focusListener.remove();
+  }
+
   _renderItem = ({item, index}) => (
-    <CaseView item={item} index={index} navigation={this.props.navigation} />
+    <CaseView
+      item={item}
+      index={index}
+      navigation={this.props.navigation}
+      phoneNumber={this.state.phoneNumber}
+    />
   );
+
+  async onRefresh() {
+    let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
+    this.setState({isRefreshing: true}); // true isRefreshing flag for enable pull to refresh indicator
+    let responseStatus = await APIGetCase(phoneNumber);
+
+    if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
+      console.log(JSON.stringify(responseStatus));
+      this.setState({
+        case: responseStatus.data,
+        spinner: false,
+        phoneNumber: phoneNumber,
+        isRefreshing: false,
+      });
+    } else {
+      this.setState({
+        spinner: false,
+        phoneNumber: phoneNumber,
+        isRefreshing: false,
+      });
+      alert('Vui lòng thử lại sau!!!!');
+    }
+  }
 
   render() {
     return (
@@ -122,6 +172,12 @@ export class SOSScreen extends Component {
             extraData={this.state}
             showsVerticalScrollIndicator={false}
             renderItem={this._renderItem}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.isRefreshing}
+                onRefresh={this.onRefresh.bind(this)}
+              />
+            }
           />
         )}
       </View>
