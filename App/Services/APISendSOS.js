@@ -12,6 +12,7 @@ export const APISendSOS = async (phoneNumber, longitude, latitude) => {
         message: 'Help me',
         longitude: longitude,
         latitude: latitude,
+        type: 2,
       }),
     });
     let responseJson = await response.json();

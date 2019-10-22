@@ -9,6 +9,8 @@ import {
 import MapView, {Marker, Callout, AnimatedRegion} from 'react-native-maps';
 import Geocoder from 'react-native-geocoder';
 
+import {MESSAGES} from '../../../Utils/Constants';
+
 import {CustomCallout} from '../../../Components';
 
 import styles from './SOSDetailScreenStyles';
@@ -104,7 +106,7 @@ export class SOSDetailScreen extends Component {
             </Marker>
           )}
         </MapView>
-        {this.state.item.status === 'Chưa Xử Lý' ? (
+        {this.state.item.status === MESSAGES.CASE.CREATE ? (
           <View style={styles.viewButton}>
             <TouchableOpacity onPress={this.joinCase} style={styles.joinButton}>
               <Text style={styles.buttonText}>Tham Gia</Text>
