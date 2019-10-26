@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -12,12 +12,15 @@ import Feather from 'react-native-vector-icons/Feather';
 import CodeInput from 'react-native-confirmation-code-input';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
+import firebase from 'react-native-firebase';
 
-import {Images, Colors} from '../../../Themes';
+import { Images, Colors } from '../../../Themes';
 import styles from './ConfirmScreenStyles';
-import {Button} from '../../../Components';
+import { Button } from '../../../Components';
+import { APICreateKnightProfile } from '../../../Services/APICreateKnightProfile';
+import { MESSAGES } from '../../../Utils/Constants';
 
-const {width, height} = Dimensions.get('screen');
+const { width, height } = Dimensions.get('screen');
 
 export class SignInScreen extends Component {
   constructor(props) {
@@ -28,10 +31,13 @@ export class SignInScreen extends Component {
       action: this.props.navigation.state.params.action,
       confirmResult: this.props.navigation.state.params.confirmResult,
       user: this.props.navigation.state.params.user,
+      token: '',
     };
   }
 
   confirm = async () => {
+    const { phoneNumber, token } = this.state;
+
     if (this.state.action === 'login') {
       let user = JSON.stringify(this.state.user);
       await AsyncStorage.setItem('LOGIN', '1');
@@ -39,20 +45,38 @@ export class SignInScreen extends Component {
       await AsyncStorage.setItem('USER', user);
       // alert(user);
       this.props.navigation.navigate('AppNavigator');
-    } else {
+    } else if (this.state.action === 'register') {
+      alert(token);
+      let responseStatus = await APICreateKnightProfile(phoneNumber, token);
+      if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
+        firebase
+          .auth()
+          .signInWithPhoneNumber(phoneNumber)
+          .then(confirmResult => {
+            this.setState({ loading: false });
+            AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
+            this.props.navigation.navigate('CreateProfile');
+          })
+          .catch(error => {
+            this.setState({ loading: false });
+            alert(error);
+          });
+      }
+    } else if (this.state.action === 'updateProfile') {
+      AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
       this.props.navigation.navigate('CreateProfile');
     }
   };
 
   _onFulfill(code) {
-    this.setState({loading: true});
+    this.setState({ loading: true });
 
-    const {confirmResult} = this.state;
+    const { confirmResult } = this.state;
     if (confirmResult && code.length) {
       confirmResult
         .confirm(code)
         .then(async user => {
-          this.setState({loading: false});
+          this.setState({ loading: false });
           // await AsyncStorage.setItem('FIREBASE_USER', user);
 
           this.confirm();
@@ -61,25 +85,36 @@ export class SignInScreen extends Component {
           // this.props.navigation.navigate('AppNavigator');
         })
         .catch(error => {
-          this.setState({loading: false});
+          this.setState({ loading: false });
           // alert(JSON.stringify(error));
-          Alert.alert('Confirmation Code', 'Code not match!', [{text: 'OK'}], {
-            cancelable: false,
-          });
+          Alert.alert(
+            'Confirmation Code',
+            'Code not match!',
+            [{ text: 'OK' }],
+            {
+              cancelable: false,
+            },
+          );
 
           this.refs.codeInput.clear();
         });
     }
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    AsyncStorage.getItem('fcmToken').then(fcmtoken => {
+      this.setState({
+        token: fcmtoken,
+      });
+    });
+  }
 
   render() {
     return (
       <View style={styles.container}>
         <Spinner
           visible={this.state.loading}
-          textStyle={{color: '#fff'}}
+          textStyle={{ color: '#fff' }}
           size="large"
         />
         <View style={styles.viewHeader}>

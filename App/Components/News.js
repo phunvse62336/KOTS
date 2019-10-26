@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -7,8 +7,9 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
+import Moment from 'react-moment';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -67,10 +68,18 @@ const styles = StyleSheet.create({
   },
   topDescription: {
     flex: 0.8,
-    fontSize: 13,
+    fontSize: 14,
   },
   bottomDescription: {
     flex: 0.2,
+    flexDirection: 'row',
+  },
+  textSource: {
+    color: '#1e90ff',
+    marginRight: 5,
+  },
+  textDate: {
+    color: '#696969',
   },
 });
 
@@ -80,20 +89,27 @@ export default class News extends Component {
   }
 
   newsDetail = () => {
-    const {item, navigation} = this.props;
-    navigation.navigate('NewsDetailScreen', {item: item});
+    const { item, navigation } = this.props;
+    navigation.navigate('NewsDetailScreen', { item: item });
   };
 
   render() {
-    const {item} = this.props;
+    const { item } = this.props;
     return (
       <TouchableOpacity style={styles.newsContainer} onPress={this.newsDetail}>
         <View style={styles.newsImageContainer}>
-          <Image style={styles.newsImage} source={{uri: item.image}} />
+          <Image style={styles.newsImage} source={{ uri: item.image }} />
         </View>
         <View style={styles.newsDescription}>
-          <Text style={styles.topDescription}>{item.description}</Text>
-          <Text style={styles.bottomDescription}> {item.date} </Text>
+          <Text style={styles.topDescription} numberOfLines={5}>
+            {item.subDescription}
+          </Text>
+          <View style={styles.bottomDescription}>
+            <Text style={styles.textSource}>{item.source}</Text>
+            <Moment fromNow element={Text} style={styles.textDate}>
+              {item.date}
+            </Moment>
+          </View>
         </View>
       </TouchableOpacity>
     );

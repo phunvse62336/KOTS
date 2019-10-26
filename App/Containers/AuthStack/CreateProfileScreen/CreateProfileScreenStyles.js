@@ -1,7 +1,7 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
-const {height, width} = Dimensions.get('window');
-import {Colors} from '../../../Themes';
+const { height, width } = Dimensions.get('window');
+import { Colors } from '../../../Themes';
 export default StyleSheet.create({
   container: {
     alignItems: 'center',
@@ -9,7 +9,7 @@ export default StyleSheet.create({
     flex: 1,
     width,
   },
-  inputViewContainer: {height: 48, position: 'relative', marginTop: 25},
+  inputViewContainer: { height: 48, position: 'relative', marginTop: 25 },
   inputViewLabel: {
     position: 'absolute',
     backgroundColor: '#fff',
@@ -31,8 +31,12 @@ export default StyleSheet.create({
     color: Colors.appColor,
     zIndex: -1,
   },
-  colorText: {color: Colors.appColor},
-  buttonGroupContainer: {marginTop: 15, alignItems: 'flex-start', width: '80%'},
+  colorText: { color: Colors.appColor },
+  buttonGroupContainer: {
+    marginTop: 15,
+    alignItems: 'flex-start',
+    width: '80%',
+  },
   buttonGroupView: {
     height: 36,
     width: '80%',
@@ -57,9 +61,9 @@ export default StyleSheet.create({
     paddingLeft: 14.5,
     paddingRight: 14.5,
   },
-  selecctedText: {color: Colors.appColor, fontSize: 14},
-  disabledText: {color: '#343438', fontSize: 14},
-  marginButton: {marginLeft: 8},
+  selecctedText: { color: Colors.appColor, fontSize: 14 },
+  disabledText: { color: '#343438', fontSize: 14 },
+  marginButton: { marginLeft: 8 },
   updateButton: {
     width: width * 0.7,
     backgroundColor: Colors.appColor,
@@ -69,5 +73,10 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
   },
-  updateTextButton: {color: 'white', fontSize: 18},
+  updateTextButton: { color: 'white', fontSize: 18 },
+  datePicker: {
+    marginTop: 25,
+    width: width * 0.8,
+    alignItems: 'center',
+  },
 });

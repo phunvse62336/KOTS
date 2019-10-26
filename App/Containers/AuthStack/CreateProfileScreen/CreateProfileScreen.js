@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -9,12 +9,16 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import moment from 'moment';
+import AsyncStorage from '@react-native-community/async-storage';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-import {HeaderUI, Button} from '../../../Components';
+import { HeaderUI, Button } from '../../../Components';
 import styles from './CreateProfileScreenStyles';
-import {Colors} from '../../../Themes';
+import { Colors } from '../../../Themes';
+import { APIUpdateKnightProfile } from '../../../Services/APIUpdateKnightProfile';
+import { MESSAGES } from '../../../Utils/Constants';
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 const GenderData = ['Nữ', 'Nam', 'Khác'];
 
@@ -23,18 +27,21 @@ export class CreateProfileScreen extends Component {
     super(props);
     this.state = {
       name: '',
-      gender: undefined,
+      gender: 1,
       address: '',
       dayOfBirth: moment(),
+      token: '',
+      phoneNumber: '',
+      spinner: false,
     };
   }
 
-  onChangeTextName = text => this.setState({name: text});
+  onChangeTextName = text => this.setState({ name: text });
 
-  onChangeTextAddress = text => this.setState({address: text});
+  onChangeTextAddress = text => this.setState({ address: text });
 
   onGenderClick = indexValue => {
-    this.setState({gender: indexValue});
+    this.setState({ gender: indexValue });
   };
 
   renderButton = (currentGender, indexGender, onPress) => (
@@ -56,15 +63,66 @@ export class CreateProfileScreen extends Component {
     </TouchableOpacity>
   );
 
-  onUpdate = () => {
-    this.props.navigation.navigate('AppNavigator');
+  onUpdate = async () => {
+    const {
+      name,
+      gender,
+      dayOfBirth,
+      address,
+      phoneNumber,
+      token,
+    } = this.state;
+
+    if (name !== '' || address !== '') {
+      this.setState({ spinner: true });
+      let responseStatus = await APIUpdateKnightProfile(
+        phoneNumber,
+        name,
+        address,
+        gender,
+        token,
+      );
+      if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
+        console.log(JSON.stringify(responseStatus));
+        this.setState({
+          spinner: false,
+        });
+        await AsyncStorage.setItem('LOGIN', '1');
+        await AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
+        this.props.navigation.navigate('AppNavigator');
+      } else {
+        this.setState({
+          spinner: false,
+        });
+        alert('Không gửi được. Vui lòng thử lại sau');
+      }
+    } else {
+      alert('Vui lòng điền hết thông tin!');
+    }
+    // this.props.navigation.navigate('AppNavigator');
   };
 
+  async componentDidMount() {
+    // let phoneNumber = await AsyncStorage.getItem('');
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
+
+    this.setState({
+      token: fcmToken,
+      phoneNumber: phoneNumber,
+    });
+  }
+
   render() {
-    const {gender} = this.state;
-    let date = moment();
+    const { gender } = this.state;
+    let nowDate = moment();
     return (
       <SafeAreaView style={styles.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textStyle={{ color: '#fff' }}
+          size="large"
+        />
         <HeaderUI title="Khởi tạo thông tin" />
         <View style={styles.inputViewContainer}>
           <View style={styles.inputViewLabel}>
@@ -90,9 +148,9 @@ export class CreateProfileScreen extends Component {
           <Text style={styles.colorText}>Giới tính</Text>
           <View style={styles.buttonGroupView}>
             {this.renderButton(gender, 0, this.onGenderClick)}
-            <View style={{width: 5}} />
+            <View style={{ width: 5 }} />
             {this.renderButton(gender, 1, this.onGenderClick)}
-            <View style={{width: 5}} />
+            <View style={{ width: 5 }} />
             {this.renderButton(gender, 2, this.onGenderClick)}
           </View>
         </View>
@@ -102,15 +160,10 @@ export class CreateProfileScreen extends Component {
           androidMode="spinner"
           placeholder="select date"
           format="DD-MM-YYYY"
-          maxDate={date}
+          maxDate={nowDate}
           confirmBtnText="Confirm"
           cancelBtnText="Cancel"
-          style={{
-            marginTop: 25,
-            width: width * 0.8,
-            alignItems: 'center',
-            width: 200,
-          }}
+          style={styles.datePicker}
           customStyles={{
             dateInput: {
               borderRadius: 10,
@@ -118,11 +171,11 @@ export class CreateProfileScreen extends Component {
               borderWidth: 2,
               height: 44,
             },
-            dateText: {color: Colors.appColor},
+            dateText: { color: Colors.appColor },
             // ... You can check the source to find the other keys.
           }}
           onDateChange={date => {
-            this.setState({dayOfBirth: date});
+            this.setState({ dayOfBirth: date });
           }}
         />
         <Button

@@ -1,8 +1,8 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
-import {Colors} from '../../../Themes';
+import { Colors } from '../../../Themes';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 export default StyleSheet.create({
   container: {
     flex: 1,
@@ -11,8 +11,14 @@ export default StyleSheet.create({
   },
   viewTitle: {
     width: width * 0.9,
+    marginBottom: 10,
   },
   viewTime: {
+    width: width * 0.9,
+    flexDirection: 'row',
+    marginBottom: 15,
+  },
+  viewSubDescription: {
     width: width * 0.9,
   },
   viewDescription: {
@@ -22,17 +28,26 @@ export default StyleSheet.create({
     fontSize: 25,
     textAlign: 'justify',
   },
-  textTime: {
-    fontSize: 13,
-    marginBottom: 10,
-  },
   textDescription: {
-    width: width * 0.9,
     fontSize: 17,
     textAlign: 'justify',
   },
   imageNews: {
     height: height * 0.3,
-    width: width,
+    width: width * 0.9,
+    marginBottom: 10,
+  },
+  textsubDescription: {
+    fontSize: 18,
+    color: '#696969',
+  },
+  textSource: {
+    color: '#1e90ff',
+    marginRight: 5,
+    fontSize: 13,
+  },
+  textDate: {
+    color: '#696969',
+    fontSize: 13,
   },
 });

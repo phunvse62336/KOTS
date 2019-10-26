@@ -1,11 +1,21 @@
-import { FIND_USER_API } from '../Utils/Constants';
+import { UPDATE_KNIGHT_PROFILE } from '../Utils/Constants';
 import axios from 'axios';
 
-export const APIFindKnight = async phoneNumber => {
+export const APIUpdateKnightProfile = async (
+  phoneNumber,
+  name,
+  address,
+  gender,
+  token,
+) => {
   try {
     let response = await axios
-      .post(FIND_USER_API, {
+      .post(UPDATE_KNIGHT_PROFILE, {
         phone: phoneNumber,
+        name: name,
+        address: address,
+        gender: gender,
+        token: token,
       })
       .then(res => {
         console.log(res);
@@ -16,13 +26,6 @@ export const APIFindKnight = async phoneNumber => {
         return { result: 3000, data: null };
       });
     return response;
-
-    // let response = await fetch(
-    //   'https://facebook.github.io/react-native/movies.json',
-    // );
-    // let responseJson = await response.json();
-    // console.log(JSON.stringify(responseJson));
-    // return responseJson.movies;
   } catch (e) {
     console.log(e.message);
     return { result: 3000, data: null };

@@ -1,8 +1,8 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
-import {Colors} from '../../../Themes';
+import { Colors } from '../../../Themes';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default StyleSheet.create({
   container: {
@@ -27,7 +27,7 @@ export default StyleSheet.create({
     width: width,
   },
   textOverImageColor: {
-    fontSize: 18,
+    fontSize: 20,
     color: '#ffffff',
   },
   textOverImage: {
@@ -39,7 +39,6 @@ export default StyleSheet.create({
     bottom: 0,
     paddingLeft: 10,
     paddingRight: 10,
-
     justifyContent: 'center',
     alignItems: 'flex-start',
   },

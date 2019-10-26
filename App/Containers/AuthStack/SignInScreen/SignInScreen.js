@@ -42,22 +42,41 @@ export class SignInScreen extends Component {
       // }
       let responseStatus = await APIFindKnight(phoneNumber);
       if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
-        firebase
-          .auth()
-          .signInWithPhoneNumber(phoneNumber)
-          .then(confirmResult => {
-            this.setState({ loading: false });
-            this.props.navigation.navigate('ConfirmScreen', {
-              phoneNumber: this.state.phoneNumber,
-              action: 'login',
-              confirmResult: confirmResult,
-              user: responseStatus.data,
+        if (responseStatus.data.isFirstLogin === 1) {
+          firebase
+            .auth()
+            .signInWithPhoneNumber(phoneNumber)
+            .then(confirmResult => {
+              this.setState({ loading: false });
+              this.props.navigation.navigate('ConfirmScreen', {
+                phoneNumber: this.state.phoneNumber,
+                name: responseStatus.data.name,
+                action: 'updateProfile',
+                confirmResult: confirmResult,
+              });
+            })
+            .catch(error => {
+              this.setState({ loading: false });
+              alert(error);
             });
-          })
-          .catch(error => {
-            this.setState({ loading: false });
-            alert(error);
-          });
+        } else {
+          firebase
+            .auth()
+            .signInWithPhoneNumber(phoneNumber)
+            .then(confirmResult => {
+              this.setState({ loading: false });
+              this.props.navigation.navigate('ConfirmScreen', {
+                phoneNumber: this.state.phoneNumber,
+                action: 'login',
+                confirmResult: confirmResult,
+                user: responseStatus.data,
+              });
+            })
+            .catch(error => {
+              this.setState({ loading: false });
+              alert(error);
+            });
+        }
       } else {
         this.setState({ loading: false });
         alert('Số điện thoại chưa được đăng ký!!!');

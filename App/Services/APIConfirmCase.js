@@ -1,4 +1,4 @@
-import {CONFIRM_CASE_API} from '../Utils/Constants';
+import { CONFIRM_CASE_API } from '../Utils/Constants';
 import axios from 'axios';
 
 export const APIConfirmCase = async (phoneNumber, caseId) => {
@@ -16,11 +16,11 @@ export const APIConfirmCase = async (phoneNumber, caseId) => {
       })
       .catch(err => {
         console.log(err);
-        return {result: 3000, data: null};
+        return { result: 3000, data: null };
       });
     return response;
   } catch (e) {
     console.log('ERROR' + e.message);
-    return {result: 3000, data: null};
+    return { result: 3000, data: null };
   }
 };

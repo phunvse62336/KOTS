@@ -1,4 +1,4 @@
-import {GET_CASE_API} from '../Utils/Constants';
+import { GET_CASE_API } from '../Utils/Constants';
 import axios from 'axios';
 
 export const APIGetCase = async phoneNumber => {
@@ -14,7 +14,7 @@ export const APIGetCase = async phoneNumber => {
       })
       .catch(err => {
         console.log(err);
-        return {result: 3000, data: null};
+        return { result: 3000, data: null };
       });
     return response;
     // let response = await fetch(
@@ -25,6 +25,6 @@ export const APIGetCase = async phoneNumber => {
     // return responseJson.movies;
   } catch (e) {
     console.log(e.message);
-    return {result: 3000, data: null};
+    return { result: 3000, data: null };
   }
 };

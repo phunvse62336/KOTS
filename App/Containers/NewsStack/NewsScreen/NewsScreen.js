@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -8,37 +8,46 @@ import {
   StyleSheet,
 } from 'react-native';
 import HeaderUI from '../../../Components/HeaderUI';
-import {News} from '../../../Components';
+import { News } from '../../../Components';
 import styles from './NewsScreenStyles';
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const NEWS = [
   {
     id: 1,
     title: 'Công an Hà Nội bổ sung 15 tổ cảnh sát 141',
-    date: 'new Date()',
+    date: '2019-10-23T12:59-0500',
+    source: 'vnexpress.vn',
     image:
       'https://znews-photo.zadn.vn/w660/Uploaded/ngotgs/2019_10_14/a_1.jpg',
-    description:
+    subDescription:
       'Từ ngày mai (15/10), Công an Hà Nội sẽ có thêm 15 tổ cảnh sát 141 hoạt động ở 12 quận và 3 huyện. Họ được trang bị bộ đàm, súng bắn đạn cao su, dùi cui điện, khóa số 8... ',
+    description:
+      'Công an Hà Nội sẽ có thêm 15 tổ cảnh sát 141 hoạt động ở 12 quận và 3 huyện. Họ được trang bị bộ đàm, súng bắn đạn cao su, dùi cui điện, khóa số 8...Công an Hà Nội sẽ có thêm 15 tổ cảnh sát 141 hoạt động ở 12 quận và 3 huyện. Họ được trang bị bộ đàm, súng bắn đạn cao su, dùi cui điện, khóa số 8... ',
   },
   {
     id: 2,
     title: 'Công an Hà Nội bổ sung 15 tổ cảnh sát 141',
-    date: 'new Date()',
+    date: '2019-10-23',
+    source: 'vnexpress.vn',
     image:
       'https://znews-photo.zadn.vn/w660/Uploaded/ngotgs/2019_10_14/a_1.jpg',
-    description:
+    subDescription:
       'Từ ngày mai (15/10), Công an Hà Nội sẽ có thêm 15 tổ cảnh sát 141 hoạt động ở 12 quận và 3 huyện. Họ được trang bị bộ đàm, súng bắn đạn cao su, dùi cui điện, khóa số 8... ',
+    description:
+      'Công an Hà Nội sẽ có thêm 15 tổ cảnh sát 141 hoạt động ở 12 quận và 3 huyện. Họ được trang bị bộ đàm, súng bắn đạn cao su, dùi cui điện, khóa số 8...Công an Hà Nội sẽ có thêm 15 tổ cảnh sát 141 hoạt động ở 12 quận và 3 huyện. Họ được trang bị bộ đàm, súng bắn đạn cao su, dùi cui điện, khóa số 8... ',
   },
   {
     id: 3,
     title: 'Công an Hà Nội bổ sung 15 tổ cảnh sát 141',
-    date: 'new Date()',
+    date: '2019-10-23',
+    source: 'vnexpress.vn',
     image:
       'https://znews-photo.zadn.vn/w660/Uploaded/ngotgs/2019_10_14/a_1.jpg',
-    description:
+    subDescription:
       'Từ ngày mai (15/10), Công an Hà Nội sẽ có thêm 15 tổ cảnh sát 141 hoạt động ở 12 quận và 3 huyện. Họ được trang bị bộ đàm, súng bắn đạn cao su, dùi cui điện, khóa số 8... ',
+    description:
+      'Công an Hà Nội sẽ có thêm 15 tổ cảnh sát 141 hoạt động ở 12 quận và 3 huyện. Họ được trang bị bộ đàm, súng bắn đạn cao su, dùi cui điện, khóa số 8...Công an Hà Nội sẽ có thêm 15 tổ cảnh sát 141 hoạt động ở 12 quận và 3 huyện. Họ được trang bị bộ đàm, súng bắn đạn cao su, dùi cui điện, khóa số 8... ',
   },
 ];
 
@@ -50,7 +59,7 @@ export default class NewsScreen extends Component {
     };
   }
 
-  _renderItem = ({item, index}) => (
+  _renderItem = ({ item, index }) => (
     <News item={item} index={index} navigation={this.props.navigation} />
   );
 
@@ -85,4 +94,4 @@ export default class NewsScreen extends Component {
   }
 }
 
-export {NewsScreen};
+export { NewsScreen };
