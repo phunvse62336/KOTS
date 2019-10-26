@@ -1,21 +1,23 @@
-import React, {Component} from 'react';
-import {Text, View, Platform, TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { Text, View, Platform, TouchableOpacity } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import {GiftedChat, Bubble, SystemMessage} from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, SystemMessage } from 'react-native-gifted-chat';
 import Geolocation from 'react-native-geolocation-service';
+import AsyncStorage from '@react-native-community/async-storage';
 
-import {HeaderMenu} from '../../../Components';
-import {Colors} from '../../../Themes';
-
+import { HeaderMenu } from '../../../Components';
+import { Colors } from '../../../Themes';
+import { APIFindKnight } from '../../../Services/APIFindKnight';
+import FirebaseService from '../../../Services/FirebaseService';
 import messages from './messages';
 
 export class SOSMessageScreen extends Component {
-  static navigationOptions = ({navigation}) => {
-    const {params} = navigation.state;
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
     return {
       headerTitle: 'Sự cố #321',
       headerTintColor: Colors.appColor,
-      headerTitleStyle: {color: Colors.appColor, fontWeight: 'bold'},
+      headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
       headerRight: (
         <HeaderMenu
           item={navigation.getParam('item', 'abc')}
@@ -39,24 +41,34 @@ export class SOSMessageScreen extends Component {
       phoneNumber: this.props.navigation.state.params.phoneNumber,
       latitude: '',
       longitude: '',
+      user: {},
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.watchLocation();
-    this.setState({
-      messages: messages,
+    let user = await AsyncStorage.getItem('USER');
+    let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
+    this.setState({ user: user });
+    FirebaseService.setConversationID(this.state.item.id.toString());
+    FirebaseService.loadMessages(message => {
+      this.setState(previousState => {
+        return {
+          messages: GiftedChat.append(previousState.messages, message),
+        };
+      });
     });
   }
 
   componentWillUnmount() {
     Geolocation.clearWatch(this.watchID);
+    FirebaseService.closeChat();
   }
 
   watchLocation = () => {
     this.watchID = Geolocation.getCurrentPosition(
       position => {
-        const {latitude, longitude} = position.coords;
+        const { latitude, longitude } = position.coords;
         console.log('item ' + JSON.stringify(position.coords));
 
         this.setState({
@@ -68,14 +80,14 @@ export class SOSMessageScreen extends Component {
         // See error code charts below.
         console.log(error.code, error.message);
       },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
     );
   };
 
   onSend = (messages = []) => {
     const step = this.state.step + 1;
     this.setState(previousState => {
-      const sentMessages = [{...messages[0], sent: true, received: true}];
+      const sentMessages = [{ ...messages[0], sent: true, received: true }];
       return {
         messages: GiftedChat.append(
           previousState.messages,
@@ -96,6 +108,7 @@ export class SOSMessageScreen extends Component {
       };
     });
   };
+
   renderBubble = props => {
     return (
       <Bubble
@@ -136,7 +149,7 @@ export class SOSMessageScreen extends Component {
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <GiftedChat
           messages={this.state.messages}
           alwaysShowSend
@@ -144,9 +157,12 @@ export class SOSMessageScreen extends Component {
           loadEarlier={this.state.loadEarlier}
           onLoadEarlier={this.onLoadEarlier}
           isLoadingEarlier={this.state.isLoadingEarlier}
-          onSend={messages => this.onSend(messages)}
+          onSend={message => {
+            FirebaseService.sendMessage(message);
+          }}
           user={{
-            _id: 1,
+            _id: FirebaseService.getUid(),
+            name: this.state.user.name,
           }}
         />
       </View>

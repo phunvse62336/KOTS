@@ -27,14 +27,17 @@ export class SignInScreen extends Component {
       phoneNumber: this.props.navigation.state.params.phoneNumber,
       action: this.props.navigation.state.params.action,
       confirmResult: this.props.navigation.state.params.confirmResult,
+      user: this.props.navigation.state.params.user,
     };
   }
 
   confirm = async () => {
     if (this.state.action === 'login') {
+      let user = JSON.stringify(this.state.user);
       await AsyncStorage.setItem('LOGIN', '1');
       await AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
-
+      await AsyncStorage.setItem('USER', user);
+      // alert(user);
       this.props.navigation.navigate('AppNavigator');
     } else {
       this.props.navigation.navigate('CreateProfile');
@@ -50,6 +53,8 @@ export class SignInScreen extends Component {
         .confirm(code)
         .then(async user => {
           this.setState({loading: false});
+          // await AsyncStorage.setItem('FIREBASE_USER', user);
+
           this.confirm();
           // alert(JSON.stringify(user));
           // await AsyncStorage.setItem('LOGIN', '1');
@@ -57,6 +62,7 @@ export class SignInScreen extends Component {
         })
         .catch(error => {
           this.setState({loading: false});
+          // alert(JSON.stringify(error));
           Alert.alert('Confirmation Code', 'Code not match!', [{text: 'OK'}], {
             cancelable: false,
           });

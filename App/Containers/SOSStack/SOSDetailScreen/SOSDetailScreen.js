@@ -108,6 +108,7 @@ export class SOSDetailScreen extends Component {
   };
 
   componentDidMount() {
+    // alert(JSON.stringify(this.state.item));
     this.getAddressFromPosition();
   }
 

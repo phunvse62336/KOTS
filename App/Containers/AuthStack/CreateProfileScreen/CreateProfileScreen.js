@@ -13,7 +13,6 @@ import moment from 'moment';
 import {HeaderUI, Button} from '../../../Components';
 import styles from './CreateProfileScreenStyles';
 import {Colors} from '../../../Themes';
-import {Date} from 'core-js';
 
 const {height, width} = Dimensions.get('window');
 
@@ -98,7 +97,6 @@ export class CreateProfileScreen extends Component {
           </View>
         </View>
         <DatePicker
-          style={{width: 200}}
           date={this.state.dayOfBirth}
           mode="date"
           androidMode="spinner"
@@ -111,6 +109,7 @@ export class CreateProfileScreen extends Component {
             marginTop: 25,
             width: width * 0.8,
             alignItems: 'center',
+            width: 200,
           }}
           customStyles={{
             dateInput: {

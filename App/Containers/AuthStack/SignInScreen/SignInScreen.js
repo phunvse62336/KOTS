@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -14,21 +14,21 @@ import firebase from 'react-native-firebase';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import styles from './SignInScreenStyles';
-import {Images, Colors} from '../../../Themes';
-import {Button} from '../../../Components';
-import {APIFindKnight} from '../../../Services/APIFindKnight';
-import {MESSAGES} from '../../../Utils/Constants';
+import { Images, Colors } from '../../../Themes';
+import { Button } from '../../../Components';
+import { APIFindKnight } from '../../../Services/APIFindKnight';
+import { MESSAGES } from '../../../Utils/Constants';
 
-const {width, height} = Dimensions.get('screen');
+const { width, height } = Dimensions.get('screen');
 
 export class SignInScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {loading: false, phoneNumber: '', confirmResult: null};
+    this.state = { loading: false, phoneNumber: '', confirmResult: null };
   }
 
   login = async () => {
-    this.setState({loading: true});
+    this.setState({ loading: true });
     if (this.state.phoneNumber !== '' && this.phone.isValidNumber() === true) {
       const phoneNumber = this.state.phoneNumber.replace(/\s/g, '');
       // let response = await fetch('http://171.244.3.182/api/v1/Video');
@@ -46,23 +46,24 @@ export class SignInScreen extends Component {
           .auth()
           .signInWithPhoneNumber(phoneNumber)
           .then(confirmResult => {
-            this.setState({loading: false});
+            this.setState({ loading: false });
             this.props.navigation.navigate('ConfirmScreen', {
               phoneNumber: this.state.phoneNumber,
               action: 'login',
               confirmResult: confirmResult,
+              user: responseStatus.data,
             });
           })
           .catch(error => {
-            this.setState({loading: false});
+            this.setState({ loading: false });
             alert(error);
           });
       } else {
-        this.setState({loading: false});
+        this.setState({ loading: false });
         alert('Số điện thoại chưa được đăng ký!!!');
       }
     } else {
-      this.setState({loading: false});
+      this.setState({ loading: false });
 
       Alert.alert('Số điện thoại không đúng', '');
     }
@@ -83,7 +84,7 @@ export class SignInScreen extends Component {
       <View style={styles.container}>
         <Spinner
           visible={this.state.loading}
-          textStyle={{color: '#fff'}}
+          textStyle={{ color: '#fff' }}
           size="large"
         />
         <View style={styles.viewLogo}>
@@ -94,7 +95,7 @@ export class SignInScreen extends Component {
             <Feather name="phone" color={Colors.appColor} size={30} />
             <PhoneInput
               onChangePhoneNumber={text => {
-                this.setState({phoneNumber: text});
+                this.setState({ phoneNumber: text });
               }}
               value={
                 this.state.phoneNumber === '' ? '+84' : this.state.phoneNumber
@@ -102,7 +103,7 @@ export class SignInScreen extends Component {
               ref={ref => {
                 this.phone = ref;
               }}
-              flagStyle={{display: 'none'}}
+              flagStyle={{ display: 'none' }}
               style={styles.phoneInput}
               textStyle={styles.colorApp}
             />

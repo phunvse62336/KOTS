@@ -3,6 +3,10 @@ export const MESSAGES = {
     SUCCESS_CODE: 200,
     FAILED_CODE: 3000,
   },
+  ROLE: {
+    CITIZEN: 1,
+    KNIGHT: 2,
+  },
   CASE: {
     CREATE: 0,
     CONFIRM: 1,

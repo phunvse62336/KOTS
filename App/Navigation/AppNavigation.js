@@ -20,6 +20,8 @@ import SOSScreen from '../Containers/SOSStack/SOSScreen/SOSScreen';
 import SOSDetailScreen from '../Containers/SOSStack/SOSDetailScreen/SOSDetailScreen';
 import SOSMessageScreen from '../Containers/SOSStack/SOSMessageScreen/SOSMessageScreen';
 
+import MenuScreen from '../Containers/MenuStack/MenuScreen/MenuScreen';
+
 import styles from './Styles/NavigationStyles';
 import {Colors} from '../Themes';
 
@@ -125,8 +127,8 @@ const GroupTabStack = createStackNavigator({
 });
 
 const MenuTabStack = createStackNavigator({
-  NewsScreen: {
-    screen: NewsScreen,
+  MenuScreen: {
+    screen: MenuScreen,
     navigationOptions: {
       header: null,
     },

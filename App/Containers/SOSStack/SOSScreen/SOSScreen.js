@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {HeaderUI, CaseView} from '../../../Components';
 import {MESSAGES} from '../../../Utils/Constants';
 import {APIGetCase} from '../../../Services/APIGetCase';
+import NavigationService from '../../../Services/NavigationService';
 
 const CASE = [
   {
@@ -88,7 +89,7 @@ export class SOSScreen extends Component {
       case: [],
       phoneNumber: '',
       isRefreshing: false, //for pull to refresh
-      messageRefresh: this.props.navigation.getParam('otherParam', ''),
+      item: this.props.navigation.getParam('item', null),
     };
   }
 
@@ -111,6 +112,13 @@ export class SOSScreen extends Component {
       });
       alert('Vui lòng thử lại sau!!!!');
     }
+    // alert(JSON.stringify(this.state.item));
+    // if (this.state.item !== null) {
+    //   NavigationService.navigate('SOSDetailScreen', {
+    //     item: this.state.item,
+    //     phoneNumber: phoneNumber,
+    //   });
+    // }
     const {navigation} = this.props;
     //Adding an event listner om focus
     //So whenever the screen will have focus it will set the state to zero
@@ -153,6 +161,13 @@ export class SOSScreen extends Component {
       });
       alert('Vui lòng thử lại sau!!!!');
     }
+
+    // if (this.state.item !== null) {
+    //   NavigationService.navigate('SOSDetailScreen', {
+    //     item: this.state.item,
+    //     phoneNumber: phoneNumber,
+    //   });
+    // }
   }
 
   render() {

@@ -95,8 +95,11 @@ export class App extends Component {
 
   async getToken() {
     let fcmToken = await AsyncStorage.getItem('fcmToken');
+    // console.log(fcmToken);
+
     if (!fcmToken) {
       fcmToken = await firebase.messaging().getToken();
+      // console.log(fcmToken);
       if (fcmToken) {
         await AsyncStorage.setItem('fcmToken', fcmToken);
       }
@@ -130,7 +133,19 @@ export class App extends Component {
     });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
+    var firebaseConfig = {
+      apiKey: 'AIzaSyBL43OazIvXF1WeTnLaXiYQl0xJag5ALoo',
+      authDomain: 'myfirebase-b1225.firebaseapp.com',
+      databaseURL: 'https://myfirebase-b1225.firebaseio.com',
+      projectId: 'myfirebase-b1225',
+      storageBucket: 'myfirebase-b1225.appspot.com',
+      messagingSenderId: '839306361620',
+      appId: '1:839306361620:web:83e3fb44eba555ff6b2001',
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
     const channel = new firebase.notifications.Android.Channel(
       NOTIFICATION_CHANNEL,
       'kots channel',
@@ -148,21 +163,11 @@ export class App extends Component {
         // Get information about the notification that was opened
         const notification: Notification = notificationOpen.notification;
         NavigationService.navigate('SOSDetailScreen', {
-          item: {
-            id: 1,
-            type: 'SOS',
-            date: 'new Date()',
-            name: 'Nguyen Van A',
-            phoneNumber: '+84971930498',
-            location: {
-              latitude: 10.782546,
-              longitude: 106.650416,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            },
-            status: 'Chưa Xử Lý',
-          },
+          item: JSON.parse(notification.data.item),
+          phoneNumber: phoneNumber,
         });
+        // alert(notification.data);
+        console.log(notification.data.item);
 
         firebase
           .notifications()
