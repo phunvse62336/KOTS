@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -10,21 +10,25 @@ import {
   SafeAreaView,
   Dimensions,
   Alert,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
-import MapView, {Marker, AnimatedRegion} from 'react-native-maps';
+import MapView, { Marker, AnimatedRegion } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
-import {FloatingAction} from 'react-native-floating-action';
+import { FloatingAction } from 'react-native-floating-action';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Toast from 'react-native-root-toast';
 import io from 'socket.io-client/dist/socket.io';
 import AsyncStorage from '@react-native-community/async-storage';
 
-import {APISendSOS} from '../../../Services/APISendSOS';
-import {MESSAGES} from '../../../Utils/Constants';
-import {Images} from '../../../Themes';
+import { APISendSOS } from '../../../Services/APISendSOS';
+import { MESSAGES } from '../../../Utils/Constants';
+import { Images } from '../../../Themes';
 import styles from './HomeScreenStyles';
 
-const {width, height} = Dimensions.get('window');
+import FirebaseService from '../../../Services/FirebaseService';
+
+const { width, height } = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
 const LATITUDE = 10.782546;
@@ -42,17 +46,18 @@ export class HomeScreen extends Component {
 
     this.state = {
       phoneNumber: '',
-      markerCoordinates: [],
-      loading: false,
+      spinner: false,
       toast: false,
       latitude: LATITUDE,
       longitude: LONGITUDE,
+      markerCoordinates: [],
       coordinate: new AnimatedRegion({
         latitude: LATITUDE,
         longitude: LONGITUDE,
         latitudeDelta: 0,
         longitudeDelta: 0,
       }),
+      user: {},
     };
 
     // Replace "X" with your PubNub Keys
@@ -60,38 +65,42 @@ export class HomeScreen extends Component {
 
   async componentDidMount() {
     let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
-    this.setState({phoneNumber: phoneNumber});
-    const socket = this.socket;
-    if (!socket) {
-      return;
-    }
-    socket.on('disconnect', () => console.log('DISCONNECT2'));
-    socket.on('locationUpdated', locationState => {
-      const newMarkerCoordinates = Object.values(locationState).map(item => ({
-        latitude: item.lat,
-        longitude: item.lng,
-      }));
-      this.setState({markerCoordinates: newMarkerCoordinates});
-      console.log(locationState);
+    console.log(phoneNumber);
+    let user = await AsyncStorage.getItem('USER');
+    this.setState({ phoneNumber: phoneNumber, user: JSON.parse(user) });
+    FirebaseService.setMyID('teamID1/' + phoneNumber);
+    FirebaseService.setTeamID('teamID1');
+    FirebaseService.trackingLocation(location => {
+      let data = location.message;
+      let listLocation = Object.entries(data).map(([key, value]) => {
+        let lastItem = Object.values(value).length - 1;
+        console.log(lastItem);
+        return {
+          key,
+          value: Object.values(value)[0],
+        };
+      });
+      listLocation = listLocation.filter(item => item.key !== phoneNumber);
+      console.log(listLocation);
+
+      this.setState({
+        markerCoordinates: listLocation,
+      });
     });
-    // this.socket.on('updatelocation', socket => {
-    //   console.log('CONNECTED');
-    // });
+
     this.watchLocation();
   }
-
-  componentDidUpdate(prevProps, prevState) {}
 
   componentWillUnmount() {
     Geolocation.clearWatch(this.watchID);
   }
 
   watchLocation = () => {
-    const {coordinate} = this.state;
+    const { coordinate } = this.state;
 
     this.watchID = Geolocation.watchPosition(
       position => {
-        const {latitude, longitude} = position.coords;
+        const { latitude, longitude } = position.coords;
 
         const newCoordinate = {
           latitude,
@@ -108,6 +117,7 @@ export class HomeScreen extends Component {
         } else {
           coordinate.timing(newCoordinate).start();
         }
+        FirebaseService.sendLocation(newCoordinate, this.state.user);
 
         this.setState({
           latitude,
@@ -120,6 +130,7 @@ export class HomeScreen extends Component {
         timeout: 20000,
         maximumAge: 1000,
         distanceFilter: 30,
+        interval: 30000,
       },
     );
   };
@@ -131,10 +142,28 @@ export class HomeScreen extends Component {
     longitudeDelta: LONGITUDE_DELTA,
   });
 
+  getLocationFriend = () => {};
+
+  pushLocation = () => {
+    this.watchID = Geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        console.log('item ' + JSON.stringify(position.coords));
+
+        FirebaseService.sendLocation(position.coords, this.state.user);
+      },
+      error => {
+        // See error code charts below.
+        console.log(error.code, error.message);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+    );
+  };
+
   sendSOS = async name => {
-    const {longitude, latitude, phoneNumber} = this.state;
+    const { longitude, latitude, phoneNumber } = this.state;
     if (name === 'bt_sos') {
-      this.setState({spinner: true});
+      this.setState({ spinner: true });
       let responseStatus = await APISendSOS(phoneNumber, longitude, latitude);
 
       if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
@@ -170,20 +199,26 @@ export class HomeScreen extends Component {
   };
 
   renderMarkers = markerCoordinates => {
-    return markerCoordinates.map((coord, index) => (
-      <MapView.Marker
-        key={index}
-        image={Images.logoApp}
-        centerOffset={{x: 25, y: 25}}
-        anchor={{x: 0.5, y: 0.5}}
-        coordinate={coord}
-        title={`Truck ${index}`}
-      />
-    ));
+    return markerCoordinates.map((data, index) => {
+      var coord = {
+        latitude: data.value.latitude,
+        longitude: data.value.longitude,
+      };
+      return (
+        <MapView.Marker
+          key={index}
+          centerOffset={{ x: 25, y: 25 }}
+          anchor={{ x: 0.5, y: 0.5 }}
+          coordinate={coord}
+          title={`Truck ${index}`}>
+          <Image source={Images.logoApp} style={{ width: 20, height: 20 }} />
+        </MapView.Marker>
+      );
+    });
   };
 
   render() {
-    const {region, markerCoordinates} = this.state;
+    const { region, markerCoordinates } = this.state;
 
     const actions = [
       {
@@ -193,7 +228,7 @@ export class HomeScreen extends Component {
         position: 1,
         textColor: '#FFF',
         textBackground: 'transparent',
-        textStyle: {fontSize: 18, fontWeight: 'bold'},
+        textStyle: { fontSize: 18, fontWeight: 'bold' },
         buttonSize: 56,
         margin: 0,
         size: 50,
@@ -207,7 +242,7 @@ export class HomeScreen extends Component {
         position: 2,
         textColor: '#fff',
         textBackground: 'transparent',
-        textStyle: {fontSize: 18, fontWeight: 'bold'},
+        textStyle: { fontSize: 18, fontWeight: 'bold' },
         buttonSize: 56,
         textElevation: 0,
         margin: 0,
@@ -215,12 +250,12 @@ export class HomeScreen extends Component {
       },
     ];
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
           <Spinner
             visible={this.state.spinner}
             textContent={'Đang Xử Lý'}
-            textStyle={{color: '#fff'}}
+            textStyle={{ color: '#fff' }}
             size="large"
           />
           <Toast

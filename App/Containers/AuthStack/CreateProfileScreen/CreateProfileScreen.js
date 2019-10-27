@@ -89,6 +89,8 @@ export class CreateProfileScreen extends Component {
         });
         await AsyncStorage.setItem('LOGIN', '1');
         await AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
+        await AsyncStorage.setItem('USER', JSON.stringify(responseStatus.data));
+
         this.props.navigation.navigate('AppNavigator');
       } else {
         this.setState({

@@ -1,8 +1,14 @@
 import firebase from 'react-native-firebase';
+import GeoFire from 'geofire';
 
 class FirebaseService {
   uid = '';
   messagesRef = null;
+  locationRef = null;
+  myLocationRef = null;
+  geofireLocation = null;
+  teamID = '';
+  myID = '';
   conversationID = '';
   // initialize Firebase Backend
   constructor() {
@@ -24,6 +30,49 @@ class FirebaseService {
   setConversationID(id) {
     this.conversationID = id;
   }
+
+  setTeamID(id) {
+    this.teamID = id;
+  }
+  setMyID(id) {
+    this.myID = id;
+  }
+
+  trackingLocation(callback) {
+    this.locationRef = firebase.database().ref(this.teamID);
+    // this.locationRef.off();
+    // const onReceive = data => {
+    //   const message = data.val();
+    //   callback({ message });
+    //   alert(JSON.stringify(message));
+    // };
+    // this.messagesRef
+    //   //.startAt(d)
+    //   //.endAt("2017-11-27T06:51:47.851Z")
+    //   .on('child_added', onReceive);
+
+    this.locationRef.on('value', location => {
+      const message = location.val();
+      // snapshot.val() is the dictionary with all your keys/values from the '/store' path
+      callback({ message });
+    });
+  }
+
+  sendLocation(location, user) {
+    this.locationRef = firebase.database().ref(this.myID);
+    //console.log(new Date(firebase.database.ServerValue.TIMESTAMP));
+    var today = new Date();
+    /* today.setDate(today.getDate() - 30);
+    var timestamp = new Date(today).toISOString(); */
+    var timestamp = today.toISOString();
+    this.locationRef.push({
+      longitude: location.longitude,
+      latitude: location.latitude,
+      createdAt: timestamp,
+      user: user,
+    });
+  }
+
   setUid(value) {
     this.uid = value;
   }

@@ -49,7 +49,7 @@ export class SOSMessageScreen extends Component {
     this.watchLocation();
     let user = await AsyncStorage.getItem('USER');
     let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
-    this.setState({ user: user });
+    this.setState({ user: JSON.parse(user) });
     FirebaseService.setConversationID(this.state.item.id.toString());
     FirebaseService.loadMessages(message => {
       this.setState(previousState => {
@@ -163,6 +163,7 @@ export class SOSMessageScreen extends Component {
           user={{
             _id: FirebaseService.getUid(),
             name: this.state.user.name,
+            avatar: 'https://placeimg.com/140/140/any',
           }}
         />
       </View>
