@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -8,9 +8,12 @@ import {
   Linking,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {Images, Colors, ApplicationStyles} from '../Themes';
-import {MESSAGES} from './../Utils/Constants';
-const {width, height} = Dimensions.get('window');
+import moment from 'moment';
+import { Images, Colors, ApplicationStyles } from '../Themes';
+import { MESSAGES } from './../Utils/Constants';
+import 'moment/locale/vi'; // without this line it didn't work
+
+const { width, height } = Dimensions.get('window');
 
 export class CaseView extends Component {
   constructor(props) {
@@ -22,12 +25,12 @@ export class CaseView extends Component {
   }
 
   callByPhone = () => {
-    const {citizenId} = this.props.item;
+    const { citizenId } = this.props.item;
     Linking.openURL(`tel:${citizenId}`);
   };
 
   viewDetail = () => {
-    const {item, navigation, phoneNumber} = this.props;
+    const { item, navigation, phoneNumber } = this.props;
     navigation.navigate('SOSDetailScreen', {
       item: item,
       phoneNumber: phoneNumber,
@@ -50,7 +53,8 @@ export class CaseView extends Component {
   };
 
   render() {
-    const {item} = this.props;
+    const { item } = this.props;
+
     return (
       <TouchableOpacity
         onPress={this.viewDetail}
@@ -87,7 +91,21 @@ export class CaseView extends Component {
               Cần Liên Lạc
             </Text>
           )}
-          <Text style={ApplicationStyles.timeCaseView}>4 phút trước</Text>
+          {item.status === MESSAGES.CASE.CREATE ? (
+            <Text style={ApplicationStyles.timeCaseView}>
+              Đã tạo{' '}
+              {moment(item.crateed_at)
+                .locale('vi')
+                .fromNow()}
+            </Text>
+          ) : (
+            <Text style={ApplicationStyles.timeCaseView}>
+              Đã cập nhật{' '}
+              {moment(item.updated_at)
+                .locale('vi')
+                .fromNow()}
+            </Text>
+          )}
           <Text style={ApplicationStyles.nameCaseView}>
             Người gửi: {item.user.name}
           </Text>

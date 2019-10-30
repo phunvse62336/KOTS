@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -6,18 +6,18 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import MapView, {Marker, Callout, AnimatedRegion} from 'react-native-maps';
+import MapView, { Marker, Callout, AnimatedRegion } from 'react-native-maps';
 import Geocoder from 'react-native-geocoder';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-import {MESSAGES} from '../../../Utils/Constants';
-import {APIConfirmCase} from '../../../Services/APIConfirmCase';
+import { MESSAGES } from '../../../Utils/Constants';
+import { APIConfirmCase } from '../../../Services/APIConfirmCase';
 
-import {CustomCallout} from '../../../Components';
+import { CustomCallout } from '../../../Components';
 
 import styles from './SOSDetailScreenStyles';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
 
@@ -49,7 +49,7 @@ export class SOSDetailScreen extends Component {
   });
 
   onMapLayout = () => {
-    this.setState({isMapReady: true});
+    this.setState({ isMapReady: true });
   };
 
   getAddressFromPosition = () => {
@@ -61,13 +61,13 @@ export class SOSDetailScreen extends Component {
 
     Geocoder.geocodePosition(position)
       .then(res => {
-        this.setState({address: res[0].formattedAddress});
+        this.setState({ address: res[0].formattedAddress });
       })
       .catch(err => console.log(err));
   };
 
   joinMessage = () => {
-    const {phoneNumber, item} = this.state;
+    const { phoneNumber, item } = this.state;
 
     this.props.navigation.navigate('SOSMessageScreen', {
       item: item,
@@ -76,8 +76,8 @@ export class SOSDetailScreen extends Component {
   };
 
   joinCase = async () => {
-    const {phoneNumber, item} = this.state;
-    this.setState({spinner: true});
+    const { phoneNumber, item } = this.state;
+    this.setState({ spinner: true });
     let responseStatus = await APIConfirmCase(phoneNumber, item.id);
     if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
       console.log(JSON.stringify(responseStatus));
@@ -88,6 +88,7 @@ export class SOSDetailScreen extends Component {
         item: {
           ...prevState.item, // keep all other key-value pairs
           status: 1,
+          inCase: true,
         },
       }));
       this.props.navigation.navigate('SOSMessageScreen', {
@@ -113,13 +114,13 @@ export class SOSDetailScreen extends Component {
   }
 
   render() {
-    const {longitude, latitude} = this.state;
+    const { longitude, latitude } = this.state;
     return (
       <View style={styles.container}>
         <Spinner
           visible={this.state.spinner}
           textContent={'Đang Xử Lý'}
-          textStyle={{color: '#fff'}}
+          textStyle={{ color: '#fff' }}
           size="large"
         />
         <MapView
@@ -134,10 +135,10 @@ export class SOSDetailScreen extends Component {
               ref={marker => {
                 this.marker = marker;
               }}
-              coordinate={{longitude, latitude}}>
+              coordinate={{ longitude, latitude }}>
               <Callout tooltip>
                 <CustomCallout>
-                  <Text style={{fontSize: 18}}>Thông tin tín hiệu</Text>
+                  <Text style={{ fontSize: 18 }}>Thông tin tín hiệu</Text>
                   <Text>Người gửi: {this.state.item.user.name}</Text>
                   <Text>Vị trí: {this.state.address}</Text>
                   <Text>Liên hệ: {this.state.item.user.id}</Text>
@@ -146,7 +147,9 @@ export class SOSDetailScreen extends Component {
             </Marker>
           )}
         </MapView>
-        {this.state.item.status === MESSAGES.CASE.CREATE ? (
+        {(this.state.item.status !== MESSAGES.CASE.SUCCESSED ||
+          this.state.item.status !== MESSAGES.CASE.FAILED) &&
+        this.state.item.inCase === false ? (
           <View style={styles.viewButton}>
             <TouchableOpacity onPress={this.joinCase} style={styles.joinButton}>
               <Text style={styles.buttonText}>Tham Gia</Text>

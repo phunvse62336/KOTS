@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
-import {Text, View, FlatList, RefreshControl} from 'react-native';
+import React, { Component } from 'react';
+import { Text, View, FlatList, RefreshControl } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
 
-import {HeaderUI, CaseView} from '../../../Components';
-import {MESSAGES} from '../../../Utils/Constants';
-import {APIGetCase} from '../../../Services/APIGetCase';
+import { HeaderUI, CaseView } from '../../../Components';
+import { MESSAGES } from '../../../Utils/Constants';
+import { APIGetCase } from '../../../Services/APIGetCase';
 import NavigationService from '../../../Services/NavigationService';
 
 const CASE = [
@@ -119,7 +119,7 @@ export class SOSScreen extends Component {
     //     phoneNumber: phoneNumber,
     //   });
     // }
-    const {navigation} = this.props;
+    const { navigation } = this.props;
     //Adding an event listner om focus
     //So whenever the screen will have focus it will set the state to zero
     this.focusListener = navigation.addListener('didFocus', () =>
@@ -131,7 +131,7 @@ export class SOSScreen extends Component {
     this.focusListener.remove();
   }
 
-  _renderItem = ({item, index}) => (
+  _renderItem = ({ item, index }) => (
     <CaseView
       item={item}
       index={index}
@@ -142,7 +142,7 @@ export class SOSScreen extends Component {
 
   async onRefresh() {
     let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
-    this.setState({isRefreshing: true}); // true isRefreshing flag for enable pull to refresh indicator
+    this.setState({ isRefreshing: true }); // true isRefreshing flag for enable pull to refresh indicator
     let responseStatus = await APIGetCase(phoneNumber);
 
     if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
@@ -172,13 +172,13 @@ export class SOSScreen extends Component {
 
   render() {
     return (
-      <View style={{flex: 1, alignItems: 'center'}}>
+      <View style={{ flex: 1, alignItems: 'center' }}>
         <HeaderUI title="Danh Sách Sự Cố" />
         {this.state.spinner === true ? (
           <Spinner
             visible={this.state.spinner}
             textContent={'Đang Xử Lý'}
-            textStyle={{color: '#fff'}}
+            textStyle={{ color: '#fff' }}
             size="large"
           />
         ) : (

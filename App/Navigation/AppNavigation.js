@@ -1,7 +1,7 @@
 import React from 'react';
-import {createAppContainer, createSwitchNavigator} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
-import {createBottomTabNavigator} from 'react-navigation-tabs';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import AuthLoadingScreen from '../Containers/AuthLoadingScreen';
@@ -12,6 +12,7 @@ import RegisterScreen from '../Containers/AuthStack/RegisterScreen/RegisterScree
 import CreateProfileScreen from '../Containers/AuthStack/CreateProfileScreen/CreateProfileScreen';
 
 import HomeScreen from '../Containers/HomeStack/HomeScreen/HomeScreen';
+import CreateSOSScreen from '../Containers/HomeStack/CreateSOSScreen/CreateSOSScreen';
 
 import NewsScreen from '../Containers/NewsStack/NewsScreen/NewsScreen';
 import NewsDetailScreen from '../Containers/NewsStack/NewsDetailScreen/NewsDetailScreen';
@@ -23,7 +24,7 @@ import SOSMessageScreen from '../Containers/SOSStack/SOSMessageScreen/SOSMessage
 import MenuScreen from '../Containers/MenuStack/MenuScreen/MenuScreen';
 
 import styles from './Styles/NavigationStyles';
-import {Colors} from '../Themes';
+import { Colors } from '../Themes';
 
 const AuthNavigator = createStackNavigator(
   {
@@ -38,7 +39,7 @@ const AuthNavigator = createStackNavigator(
       navigationOptions: {
         headerTitle: 'Nhập Mã Xác Nhận',
         headerTintColor: Colors.appColor,
-        headerTitleStyle: {color: Colors.appColor, fontWeight: 'bold'},
+        headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
       },
     },
     RegisterScreen: {
@@ -73,6 +74,14 @@ const HomeTabStack = createStackNavigator({
       header: null,
     },
   },
+  CreateSOSScreen: {
+    screen: CreateSOSScreen,
+    navigationOptions: {
+      headerTitle: 'Yêu Cầu Giúp Đỡ',
+      headerTintColor: Colors.appColor,
+      headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
+    },
+  },
 });
 
 const NewsTabStack = createStackNavigator({
@@ -87,7 +96,7 @@ const NewsTabStack = createStackNavigator({
     navigationOptions: {
       headerTitle: 'Chi tiết bài báo',
       headerTintColor: Colors.appColor,
-      headerTitleStyle: {color: Colors.appColor, fontWeight: 'bold'},
+      headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
     },
   },
 });
@@ -104,7 +113,7 @@ const SOSTabStack = createStackNavigator({
     navigationOptions: {
       headerTitle: 'Chi Tiết Sự Cố',
       headerTintColor: Colors.appColor,
-      headerTitleStyle: {color: Colors.appColor, fontWeight: 'bold'},
+      headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
     },
   },
   SOSMessageScreen: {
@@ -112,7 +121,7 @@ const SOSTabStack = createStackNavigator({
     navigationOptions: {
       headerTitle: 'Chi Tiết Sự Cố',
       headerTintColor: Colors.appColor,
-      headerTitleStyle: {color: Colors.appColor, fontWeight: 'bold'},
+      headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
     },
   },
 });
@@ -144,8 +153,8 @@ const AppNavigator = createBottomTabNavigator(
     MenuTabStack,
   },
   {
-    defaultNavigationOptions: ({navigation}) => ({
-      tabBarIcon: ({focused, tintColor}) =>
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, tintColor }) =>
         getTabBarIcon(navigation, focused, tintColor),
     }),
 
@@ -158,7 +167,7 @@ const AppNavigator = createBottomTabNavigator(
 );
 
 const getTabBarIcon = (navigation, focused, tintColor) => {
-  const {routeName} = navigation.state;
+  const { routeName } = navigation.state;
   let iconName;
   if (routeName === 'HomeTabStack') {
     iconName = 'home';

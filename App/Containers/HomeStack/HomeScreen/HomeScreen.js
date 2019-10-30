@@ -12,8 +12,9 @@ import {
   Alert,
   TouchableOpacity,
   Image,
+  Linking,
 } from 'react-native';
-import MapView, { Marker, AnimatedRegion } from 'react-native-maps';
+import MapView, { Marker, AnimatedRegion, Callout } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import { FloatingAction } from 'react-native-floating-action';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -23,8 +24,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import { APISendSOS } from '../../../Services/APISendSOS';
 import { MESSAGES } from '../../../Utils/Constants';
-import { Images } from '../../../Themes';
+import { Images, Colors } from '../../../Themes';
 import styles from './HomeScreenStyles';
+import { CustomCallout } from '../../../Components';
 
 import FirebaseService from '../../../Services/FirebaseService';
 
@@ -150,7 +152,7 @@ export class HomeScreen extends Component {
         const { latitude, longitude } = position.coords;
         console.log('item ' + JSON.stringify(position.coords));
 
-        FirebaseService.sendLocation(position.coords, this.state.user);
+        // FirebaseService.sendLocation(position.coords, this.state.user);
       },
       error => {
         // See error code charts below.
@@ -195,6 +197,11 @@ export class HomeScreen extends Component {
         5000,
       ); // hide toast after 5s
     } else {
+      this.props.navigation.navigate('CreateSOSScreen', {
+        latitude: this.state.latitude,
+        longitude: this.state.longitude,
+        phoneNumber: phoneNumber,
+      });
     }
   };
 
@@ -212,6 +219,13 @@ export class HomeScreen extends Component {
           coordinate={coord}
           title={`Truck ${index}`}>
           <Image source={Images.logoApp} style={{ width: 20, height: 20 }} />
+          <Callout onPress={() => Linking.openURL(`tel:${data.value.user.id}`)}>
+            <View style={{ width: 170 }}>
+              <Text style={{ fontSize: 18 }}>Thông tin hiệp sĩ</Text>
+              <Text>Hiệp sĩ: {data.value.user.name}</Text>
+              <Text>Liên hệ: {data.value.user.id}</Text>
+            </View>
+          </Callout>
         </MapView.Marker>
       );
     });
