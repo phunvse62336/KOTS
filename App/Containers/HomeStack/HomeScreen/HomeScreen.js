@@ -70,20 +70,25 @@ export class HomeScreen extends Component {
     console.log(phoneNumber);
     let user = await AsyncStorage.getItem('USER');
     this.setState({ phoneNumber: phoneNumber, user: JSON.parse(user) });
-    FirebaseService.setMyID('teamID1/' + phoneNumber);
-    FirebaseService.setTeamID('teamID1');
+    FirebaseService.setMyID(
+      'teamID/' + this.state.user.team_id + '/' + phoneNumber,
+    );
+    FirebaseService.setTeamID('teamID/' + this.state.user.team_id);
     FirebaseService.trackingLocation(location => {
-      let data = location.message;
-      let listLocation = Object.entries(data).map(([key, value]) => {
-        let lastItem = Object.values(value).length - 1;
-        console.log(lastItem);
-        return {
-          key,
-          value: Object.values(value)[0],
-        };
-      });
-      listLocation = listLocation.filter(item => item.key !== phoneNumber);
-      console.log(listLocation);
+      let data = location.message !== null ? location.message : null;
+      let listLocation = [];
+      if (data != null) {
+        listLocation = Object.entries(data).map(([key, value]) => {
+          let lastItem = Object.values(value).length - 1;
+          console.log(lastItem);
+          return {
+            key,
+            value: Object.values(value)[0],
+          };
+        });
+        listLocation = listLocation.filter(item => item.key !== phoneNumber);
+        console.log(listLocation);
+      }
 
       this.setState({
         markerCoordinates: listLocation,
@@ -152,7 +157,7 @@ export class HomeScreen extends Component {
         const { latitude, longitude } = position.coords;
         console.log('item ' + JSON.stringify(position.coords));
 
-        // FirebaseService.sendLocation(position.coords, this.state.user);
+        // FirebaseService.sendLocattrackingLocationion(position.coords, this.state.user);
       },
       error => {
         // See error code charts below.

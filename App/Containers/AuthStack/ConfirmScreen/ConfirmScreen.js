@@ -18,6 +18,8 @@ import { Images, Colors } from '../../../Themes';
 import styles from './ConfirmScreenStyles';
 import { Button } from '../../../Components';
 import { APICreateKnightProfile } from '../../../Services/APICreateKnightProfile';
+import { APILogin } from '../../../Services/APILogin';
+
 import { MESSAGES } from '../../../Utils/Constants';
 
 const { width, height } = Dimensions.get('screen');
@@ -40,27 +42,22 @@ export class SignInScreen extends Component {
 
     if (this.state.action === 'login') {
       let user = JSON.stringify(this.state.user);
-      await AsyncStorage.setItem('LOGIN', '1');
-      await AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
-      await AsyncStorage.setItem('USER', user);
-      // alert(user);
-      this.props.navigation.navigate('AppNavigator');
+      let responseStatus = await APILogin(phoneNumber, token);
+      console.log('ABC ' + JSON.stringify(responseStatus));
+      if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
+        console.log('vo ne');
+        await AsyncStorage.setItem('LOGIN', '1');
+        await AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
+        await AsyncStorage.setItem('USER', user);
+        // alert(user);
+        this.props.navigation.navigate('AppNavigator');
+      }
     } else if (this.state.action === 'register') {
       alert(token);
       let responseStatus = await APICreateKnightProfile(phoneNumber, token);
       if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
-        firebase
-          .auth()
-          .signInWithPhoneNumber(phoneNumber)
-          .then(confirmResult => {
-            this.setState({ loading: false });
-            AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
-            this.props.navigation.navigate('CreateProfile');
-          })
-          .catch(error => {
-            this.setState({ loading: false });
-            alert(error);
-          });
+        AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
+        this.props.navigation.navigate('CreateProfile');
       }
     } else if (this.state.action === 'updateProfile') {
       AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
@@ -101,12 +98,18 @@ export class SignInScreen extends Component {
     }
   }
 
-  componentDidMount() {
-    AsyncStorage.getItem('fcmToken').then(fcmtoken => {
-      this.setState({
-        token: fcmtoken,
-      });
-    });
+  async componentDidMount() {
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    // console.log(fcmToken);
+
+    if (!fcmToken) {
+      fcmToken = await firebase.messaging().getToken();
+      // console.log(fcmToken);
+      if (fcmToken) {
+        await AsyncStorage.setItem('fcmToken', fcmToken);
+      }
+    }
+    this.setState({ token: fcmToken });
   }
 
   render() {

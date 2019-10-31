@@ -26,6 +26,8 @@ export const BASE_URL = 'https://kots.herokuapp.com/api/';
 
 export const FIND_KNIGHT_API = BASE_URL + 'findKnight';
 
+export const LOGIN_API = BASE_URL + 'login';
+
 export const FIND_USER_API = BASE_URL + 'findUser';
 
 export const CREATE_KNIGHT_PROFILE = BASE_URL + 'createProfile';
@@ -39,3 +41,7 @@ export const GET_CASE_API = BASE_URL + 'getCase';
 export const CONFIRM_CASE_API = BASE_URL + 'confirmCase';
 
 export const CLOSE_CASE_API = BASE_URL + 'closeCase';
+
+export const GET_POLICECONTACT = BASE_URL + 'getPoliceContact';
+
+export const GET_NEWS = BASE_URL + 'getNews';

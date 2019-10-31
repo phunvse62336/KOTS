@@ -1,5 +1,11 @@
+import { Platform } from 'react-native';
 import firebase from 'react-native-firebase';
 import GeoFire from 'geofire';
+import RNFetchBlob from 'rn-fetch-blob';
+const Blob = RNFetchBlob.polyfill.Blob;
+const fs = RNFetchBlob.fs;
+window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
+window.Blob = Blob;
 
 class FirebaseService {
   uid = '';
@@ -94,6 +100,8 @@ class FirebaseService {
           _id: message.user._id,
           name: message.user.name,
         },
+        messageType: message.messageType || '',
+        audio: message.audio || '',
       });
     };
 
@@ -122,6 +130,21 @@ class FirebaseService {
       });
     }
   }
+
+  sendMessageAudio(message) {
+    //console.log(new Date(firebase.database.ServerValue.TIMESTAMP));
+    var today = new Date();
+    /* today.setDate(today.getDate() - 30);
+    var timestamp = new Date(today).toISOString(); */
+    var timestamp = today.toISOString();
+    this.messagesRef.push({
+      text: message.text,
+      user: message.user,
+      createdAt: timestamp,
+      messageType: message.messageType,
+      audio: message.audio,
+    });
+  }
   // close the connection to the Backend
   closeChat() {
     if (this.messagesRef) {
@@ -139,6 +162,54 @@ class FirebaseService {
     //var changedISODate = today.toISOString();
     console.log(changedISODate);
     return changedISODate;
+  }
+
+  uploadImage(image, mime = 'application/octet-stream') {
+    console.log('1');
+    return new Promise((resolve, reject) => {
+      const imageRef = firebase
+        .storage()
+        .ref('images')
+        .child(image.fileName);
+
+      imageRef
+        .putFile(image.path)
+        .then(() => {
+          console.log('4');
+          return imageRef.getDownloadURL();
+        })
+        .then(url => {
+          console.log('5');
+          resolve(url);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+
+  uploadAudio(audio, mime = 'application/octet-stream') {
+    console.log('1');
+    return new Promise((resolve, reject) => {
+      const audioRef = firebase
+        .storage()
+        .ref('audio')
+        .child(this.uid + Date.now() + '.aac');
+
+      audioRef
+        .putFile(audio.uri)
+        .then(() => {
+          console.log('4');
+          return audioRef.getDownloadURL();
+        })
+        .then(url => {
+          console.log(url);
+          resolve(url);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
   }
 }
 

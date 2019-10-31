@@ -20,8 +20,10 @@ import NewsDetailScreen from '../Containers/NewsStack/NewsDetailScreen/NewsDetai
 import SOSScreen from '../Containers/SOSStack/SOSScreen/SOSScreen';
 import SOSDetailScreen from '../Containers/SOSStack/SOSDetailScreen/SOSDetailScreen';
 import SOSMessageScreen from '../Containers/SOSStack/SOSMessageScreen/SOSMessageScreen';
+import SOSVoiceChatScreen from '../Containers/SOSStack/SOSVoiceChatScreen/SOSVoiceChatScreen';
 
 import MenuScreen from '../Containers/MenuStack/MenuScreen/MenuScreen';
+import PoliceScreen from '../Containers/MenuStack/PoliceScreen/PoliceScreen';
 
 import styles from './Styles/NavigationStyles';
 import { Colors } from '../Themes';
@@ -124,6 +126,12 @@ const SOSTabStack = createStackNavigator({
       headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
     },
   },
+  SOSVoiceChatScreen: {
+    screen: SOSVoiceChatScreen,
+    navigationOptions: {
+      header: null,
+    },
+  },
 });
 
 const GroupTabStack = createStackNavigator({
@@ -140,6 +148,14 @@ const MenuTabStack = createStackNavigator({
     screen: MenuScreen,
     navigationOptions: {
       header: null,
+    },
+  },
+  PoliceScreen: {
+    screen: PoliceScreen,
+    navigationOptions: {
+      headerTitle: 'Danh sách cảnh sát',
+      headerTintColor: Colors.appColor,
+      headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
     },
   },
 });

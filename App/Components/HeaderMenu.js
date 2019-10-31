@@ -1,13 +1,13 @@
 import React from 'react';
-import Menu, {MenuItem} from 'react-native-material-menu';
-import {Image, TouchableOpacity, Alert} from 'react-native';
+import Menu, { MenuItem } from 'react-native-material-menu';
+import { Image, TouchableOpacity, Alert } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Geolocation from 'react-native-geolocation-service';
 
-import {APICloseCase} from '../Services/APICloseCase';
-import {MESSAGES} from '../Utils/Constants';
-import {Colors} from '../Themes';
+import { APICloseCase } from '../Services/APICloseCase';
+import { MESSAGES } from '../Utils/Constants';
+import { Colors } from '../Themes';
 
 export default class HeaderMenu extends React.Component<props> {
   constructor(props) {
@@ -30,7 +30,7 @@ export default class HeaderMenu extends React.Component<props> {
   watchLocation = () => {
     this.watchID = Geolocation.getCurrentPosition(
       position => {
-        const {latitude, longitude} = position.coords;
+        const { latitude, longitude } = position.coords;
         console.log('item ' + JSON.stringify(position.coords));
 
         this.setState({
@@ -42,7 +42,7 @@ export default class HeaderMenu extends React.Component<props> {
         // See error code charts below.
         console.log(error.code, error.message);
       },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
     );
   };
 
@@ -61,7 +61,7 @@ export default class HeaderMenu extends React.Component<props> {
   };
 
   caseSuccess = async () => {
-    const {phoneNumber, longitude, latitude, item} = this.state;
+    const { phoneNumber, longitude, latitude, item } = this.state;
     console.log(
       phoneNumber + ' ' + 2 + ' ' + longitude + ' ' + latitude + ' ' + item.id,
     );
@@ -75,10 +75,16 @@ export default class HeaderMenu extends React.Component<props> {
     if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
       console.log(JSON.stringify(responseStatus));
       alert('Đóng thành công');
-      this.props.navigation.navigate('SOSScreen', {refreshMessage: '1'});
+      this.props.navigation.navigate('SOSScreen', { refreshMessage: '1' });
     } else {
       alert('Không gửi được. Vui lòng thử lại sau');
     }
+  };
+
+  voiceCall = () => {
+    this._menu.hide();
+
+    this.props.navigation.navigate('SOSVoiceChatScreen');
   };
 
   closeCase = () => {
@@ -103,7 +109,7 @@ export default class HeaderMenu extends React.Component<props> {
           },
         },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
@@ -124,17 +130,19 @@ export default class HeaderMenu extends React.Component<props> {
           </TouchableOpacity>
         }>
         <MenuItem
-          onPress={() => this.hideMenu()}
-          textStyle={{color: '#000', fontSize: 16}}>
+          onPress={this.voiceCall}
+          textStyle={{ color: '#000', fontSize: 16 }}>
           Gọi đồng đội
         </MenuItem>
-        <MenuItem textStyle={{color: '#000', fontSize: 16}}>
+        <MenuItem textStyle={{ color: '#000', fontSize: 16 }}>
           Thông tin sự cố
         </MenuItem>
-        <MenuItem textStyle={{color: '#000', fontSize: 16}}>Rời sự cố</MenuItem>
+        <MenuItem textStyle={{ color: '#000', fontSize: 16 }}>
+          Rời sự cố
+        </MenuItem>
         <MenuItem
           onPress={this.closeCase}
-          textStyle={{color: '#000', fontSize: 16}}>
+          textStyle={{ color: '#000', fontSize: 16 }}>
           Đóng sự cố
         </MenuItem>
       </Menu>

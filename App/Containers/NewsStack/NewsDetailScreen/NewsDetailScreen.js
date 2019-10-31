@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Image, ScrollView, Dimensions } from 'react-native';
 import styles from './NewsDetailScreenStyles';
-import Moment from 'react-moment';
+import moment from 'moment';
 
 const { width, height } = Dimensions.get('window');
 
@@ -22,14 +22,17 @@ export default class NewsDetailScreen extends Component {
           </View>
           <View style={styles.viewSubDescription}>
             <Text style={styles.textsubDescription}>
-              {this.state.item.subDescription}
+              {this.state.item.subContent}
             </Text>
           </View>
           <View style={styles.viewTime}>
             <Text style={styles.textSource}>{this.state.item.source}</Text>
-            <Moment fromNow element={Text} style={styles.textDate}>
-              {this.state.item.date}
-            </Moment>
+            <Text style={styles.textDate}>
+              {' '}
+              {moment(this.state.item.date)
+                .locale('vi')
+                .fromNow()}
+            </Text>
           </View>
           <Image
             source={{ uri: this.state.item.image }}
@@ -38,7 +41,7 @@ export default class NewsDetailScreen extends Component {
 
           <View style={styles.viewDescription}>
             <Text style={styles.textDescription}>
-              {this.state.item.description}
+              {this.state.item.content}
             </Text>
           </View>
         </View>

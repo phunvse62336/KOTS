@@ -71,4 +71,22 @@ export default StyleSheet.create({
   bottomDescription: {
     flex: 0.2,
   },
+  containerScrollView: {
+    height: '100%',
+  },
+  textLoadMore: {
+    textAlign: 'center',
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  btnLoad: {
+    backgroundColor: Colors.appColor,
+    padding: 10,
+    width: width * 0.3,
+    borderRadius: 5,
+    alignSelf: 'center',
+    marginBottom: 10,
+    marginTop: 10,
+  },
 });

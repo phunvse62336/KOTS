@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import Moment from 'react-moment';
-
+import moment from 'moment';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -102,13 +102,16 @@ export default class News extends Component {
         </View>
         <View style={styles.newsDescription}>
           <Text style={styles.topDescription} numberOfLines={5}>
-            {item.subDescription}
+            {item.subContent}
           </Text>
           <View style={styles.bottomDescription}>
             <Text style={styles.textSource}>{item.source}</Text>
-            <Moment fromNow element={Text} style={styles.textDate}>
-              {item.date}
-            </Moment>
+            <Text style={styles.textDate}>
+              {' '}
+              {moment(item.created_at)
+                .locale('vi')
+                .fromNow()}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>
