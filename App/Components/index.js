@@ -5,6 +5,8 @@ import CaseView from './CaseView';
 import CustomCallout from './CustomCallout';
 import News from './News';
 import HeaderMenu from './HeaderMenu';
+import Police from './Police';
+import Member from './Member';
 
 export {
   FullScreenLoadingView,
@@ -14,4 +16,6 @@ export {
   CustomCallout,
   News,
   HeaderMenu,
+  Police,
+  Member,
 };

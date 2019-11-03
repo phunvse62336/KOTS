@@ -4,7 +4,7 @@ const { width, height } = Dimensions.get('window');
 import Spinner from 'react-native-loading-spinner-overlay';
 import Toast from 'react-native-root-toast';
 
-import Police from '../../../Components/Police';
+import { Police } from '../../../Components';
 import { APIGetPoliceContact } from '../../../Services/APIGetPoliceContact';
 import { MESSAGES } from '../../../Utils/Constants';
 

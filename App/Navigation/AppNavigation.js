@@ -27,6 +27,8 @@ import PoliceScreen from '../Containers/MenuStack/PoliceScreen/PoliceScreen';
 import FeedBackScreen from '../Containers/MenuStack/FeedBackScreen/FeedBackScreen';
 import UpdateProfileScreen from '../Containers/MenuStack/UpdateProfileScreen/UpdateProfileScreen';
 
+import GroupScreen from '../Containers/GroupStack/GroupScreen/GroupScreen';
+
 import styles from './Styles/NavigationStyles';
 import { Colors } from '../Themes';
 
@@ -137,8 +139,8 @@ const SOSTabStack = createStackNavigator({
 });
 
 const GroupTabStack = createStackNavigator({
-  NewsScreen: {
-    screen: NewsScreen,
+  GroupScreen: {
+    screen: GroupScreen,
     navigationOptions: {
       header: null,
     },
