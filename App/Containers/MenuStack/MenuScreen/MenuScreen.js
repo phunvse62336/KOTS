@@ -6,23 +6,26 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import styles from './MenuScreenStyles';
+import { APIRemoveToken } from '../../../Services/APIRemoveToken';
 
 export class MenuScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = { user: {} };
+    this.state = { phoneNumber: '', user: {} };
   }
 
   async componentDidMount() {
-    // let phoneNumber = await AsyncStorage.getItem('');
+    let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
     let user = await AsyncStorage.getItem('USER');
-    this.setState({ user: JSON.parse(user) });
+    this.setState({ user: JSON.parse(user), phoneNumber: phoneNumber });
   }
 
   logout = async () => {
     try {
       await firebase.auth().signOut();
       AsyncStorage.clear();
+      let responseStatus = await APIRemoveToken(this.state.phoneNumber);
+
       this.props.navigation.navigate('AuthNavigator');
     } catch (e) {
       alert('Có lỗi');
@@ -66,7 +69,11 @@ export class MenuScreen extends Component {
                 <Icon name="user" size={30} style={styles.iconStyle} />
                 <Text style={styles.textTouch}>Xem thông tin chi tiết</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.viewTouch}>
+              <TouchableOpacity
+                style={styles.viewTouch}
+                onPress={() =>
+                  this.props.navigation.navigate('UpdateProfileScreen')
+                }>
                 <Icon name="user-plus" size={30} style={styles.iconStyle} />
                 <Text style={styles.textTouch}>Sửa đổi profile</Text>
               </TouchableOpacity>
