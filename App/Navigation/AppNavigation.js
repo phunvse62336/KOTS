@@ -24,6 +24,8 @@ import SOSVoiceChatScreen from '../Containers/SOSStack/SOSVoiceChatScreen/SOSVoi
 
 import MenuScreen from '../Containers/MenuStack/MenuScreen/MenuScreen';
 import PoliceScreen from '../Containers/MenuStack/PoliceScreen/PoliceScreen';
+import FeedBackScreen from '../Containers/MenuStack/FeedBackScreen/FeedBackScreen';
+import UpdateProfileScreen from '../Containers/MenuStack/UpdateProfileScreen/UpdateProfileScreen';
 
 import styles from './Styles/NavigationStyles';
 import { Colors } from '../Themes';
@@ -154,6 +156,22 @@ const MenuTabStack = createStackNavigator({
     screen: PoliceScreen,
     navigationOptions: {
       headerTitle: 'Danh sách cảnh sát',
+      headerTintColor: Colors.appColor,
+      headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
+    },
+  },
+  FeedBackScreen: {
+    screen: FeedBackScreen,
+    navigationOptions: {
+      headerTitle: 'Gửi phản hồi',
+      headerTintColor: Colors.appColor,
+      headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
+    },
+  },
+  UpdateProfileScreen: {
+    screen: UpdateProfileScreen,
+    navigationOptions: {
+      headerTitle: 'Sửa đổi profile',
       headerTintColor: Colors.appColor,
       headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
     },

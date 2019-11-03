@@ -9,9 +9,10 @@ import {
   PermissionsAndroid,
   StyleSheet,
 } from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import ImagePicker from 'react-native-image-picker';
 
 import {
   GiftedChat,
@@ -76,6 +77,7 @@ export class SOSMessageScreen extends Component {
         AudioEncodingBitRate: 32000,
       },
     };
+    this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
   }
 
   async componentDidMount() {
@@ -272,7 +274,8 @@ export class SOSMessageScreen extends Component {
         size={35}
         color={this.state.playAudio ? 'red' : 'blue'}
         style={{
-          left: 90,
+          left:
+            props.currentMessage.user._id === FirebaseService.getUid() ? 90 : 0,
           position: 'relative',
           shadowColor: '#000',
           shadowOffset: { width: 0, height: 0 },
@@ -342,6 +345,93 @@ export class SOSMessageScreen extends Component {
     }
   }
 
+  renderAndroidCamera(props) {
+    if (Platform.OS === 'android') {
+      return (
+        <TouchableOpacity
+          style={{
+            bottom: 5,
+            right: 60,
+            position: 'absolute',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.5,
+            zIndex: 2,
+            backgroundColor: Colors.appColor,
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          onPress={this.selectPhotoTapped.bind(this)}>
+          <FontAwesome name="camera" size={25} color="white" />
+        </TouchableOpacity>
+      );
+    }
+  }
+
+  selectPhotoTapped() {
+    const options = {
+      quality: 1.0,
+      maxWidth: 500,
+      maxHeight: 500,
+      storageOptions: {
+        skipBackup: true,
+      },
+    };
+    const { user } = this.state;
+
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled photo picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        var path = '';
+        if (Platform.OS === 'ios') {
+          path = response.uri.toString();
+        } else {
+          path = response.path.toString();
+        }
+        const image = {
+          image: response.uri.toString(),
+          path: path,
+          fileName: response.fileName,
+        };
+        // this.setState({
+        //   photoSource: image,
+        //   videoSource: null,
+        //   audioSource: null,
+        // });
+        FirebaseService.uploadImage(image)
+          .then(url => {
+            // alert('uploaded');
+            const message = {};
+            message._id = this.messageIdGenerator();
+            message.createdAt = Date.now();
+            message.user = {
+              _id: FirebaseService.getUid(),
+              name: `${user.name}`,
+              avatar: user.avatar,
+            };
+            message.text = this.state.typingText;
+            message.image = url;
+            message.messageType = 'image';
+            console.log('message' + JSON.stringify(message));
+            FirebaseService.sendMessageImage(message);
+          })
+          .catch(error => console.log(error));
+      }
+    });
+  }
+
   renderAccessoryBar(props) {
     <View
       style={{
@@ -364,6 +454,7 @@ export class SOSMessageScreen extends Component {
     return (
       <View style={{ flex: 1 }}>
         {this.renderAndroidMicrophone()}
+        {this.renderAndroidCamera()}
 
         <GiftedChat
           messages={this.state.messages}

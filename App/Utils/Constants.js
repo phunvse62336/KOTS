@@ -45,3 +45,5 @@ export const CLOSE_CASE_API = BASE_URL + 'closeCase';
 export const GET_POLICECONTACT = BASE_URL + 'getPoliceContact';
 
 export const GET_NEWS = BASE_URL + 'getNews';
+
+export const REMOVE_TOKEN_API = BASE_URL + 'removeToken';

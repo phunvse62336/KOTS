@@ -1,15 +1,11 @@
-import { SEND_SOS_API } from '../Utils/Constants';
+import { REMOVE_TOKEN_API } from '../Utils/Constants';
 import axios from 'axios';
 
-export const APISendSOS = async (phoneNumber, longitude, latitude) => {
+export const APIRemoveToken = async phoneNumber => {
   try {
     let response = await axios
-      .post(SEND_SOS_API, {
+      .post(REMOVE_TOKEN_API, {
         phone: phoneNumber,
-        message: 'Help me',
-        longitude: longitude,
-        latitude: latitude,
-        type: 2,
       })
       .then(res => {
         console.log(res);
@@ -21,7 +17,7 @@ export const APISendSOS = async (phoneNumber, longitude, latitude) => {
       });
     return response;
   } catch (e) {
-    console.log('ERROR' + e.message);
+    console.log(e.message);
     return { result: 3000, data: null };
   }
 };

@@ -50,7 +50,11 @@ export class MenuScreen extends Component {
           <View style={styles.viewBasic}>
             <Text style={styles.textSettingTitle}>Chức năng</Text>
             <View style={styles.viewFunctionBasic}>
-              <TouchableOpacity style={styles.viewTouch}>
+              <TouchableOpacity
+                style={styles.viewTouch}
+                onPress={() =>
+                  this.props.navigation.navigate('FeedBackScreen')
+                }>
                 <Icon name="comment" size={30} style={styles.iconStyle} />
                 <Text style={styles.textTouch}>Gửi feedback</Text>
               </TouchableOpacity>

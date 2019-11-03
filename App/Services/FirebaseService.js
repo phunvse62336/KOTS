@@ -102,6 +102,7 @@ class FirebaseService {
         },
         messageType: message.messageType || '',
         audio: message.audio || '',
+        image: message.image || '',
       });
     };
 
@@ -145,6 +146,22 @@ class FirebaseService {
       audio: message.audio,
     });
   }
+
+  sendMessageImage(message) {
+    //console.log(new Date(firebase.database.ServerValue.TIMESTAMP));
+    var today = new Date();
+    /* today.setDate(today.getDate() - 30);
+    var timestamp = new Date(today).toISOString(); */
+    var timestamp = today.toISOString();
+    this.messagesRef.push({
+      text: message.text,
+      user: message.user,
+      createdAt: timestamp,
+      messageType: message.messageType,
+      image: message.image,
+    });
+  }
+
   // close the connection to the Backend
   closeChat() {
     if (this.messagesRef) {

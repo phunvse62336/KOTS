@@ -21,11 +21,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: Colors.appColor,
-    marginTop: 10,
-    padding: 15,
+    marginTop: 15,
   },
   viewAccountInfo: {
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -46,12 +44,29 @@ const styles = StyleSheet.create({
   viewInfo: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    padding: 10,
   },
   viewLeft: {
     width: '30%',
   },
   viewRight: {
     width: '70%',
+  },
+  viewPoliceName: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.appColor,
+    width: width * 0.9,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 11,
+    paddingTop: 6,
+    paddingBottom: 6,
+  },
+  textPoliceName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#ffffff',
   },
 });
 
@@ -67,14 +82,17 @@ export default class Police extends Component {
         style={styles.viewAccount}
         onPress={() => Linking.openURL(`tel:${item.phone}`)}>
         <View style={styles.viewAccountInfo}>
+          <View style={styles.viewPoliceName}>
+            <Text style={styles.textPoliceName}>{item.name}</Text>
+          </View>
           <View style={styles.viewInfo}>
             <View style={styles.viewLeft}>
-              <Text style={styles.textName}>Tên: </Text>
+              {/* <Text style={styles.textName}>Tên: </Text> */}
               <Text style={styles.textName}>Điện thoại: </Text>
               <Text style={styles.textName}>Địa chỉ: </Text>
             </View>
             <View style={styles.viewRight}>
-              <Text style={styles.textInfo}>{item.name}</Text>
+              {/* <Text style={styles.textInfo}>{item.name}</Text> */}
               <Text style={styles.textInfo}>{item.phone}</Text>
               <Text style={styles.textInfo}>{item.address}</Text>
             </View>

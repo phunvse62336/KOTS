@@ -10,10 +10,15 @@ import {
   ScrollView,
   Image,
   Platform,
+  Alert,
+  PermissionsAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ImagePicker from 'react-native-image-picker';
 import Video from 'react-native-video';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { AudioRecorder, AudioUtils } from 'react-native-audio';
+import Sound from 'react-native-sound';
 
 import Colors from '../../../Themes/Colors';
 import Button from '../../../Components/Button';
@@ -34,10 +39,114 @@ export default class CreateSOSScreen extends Component {
       photoSource: null,
       videoSource: null,
       audioSource: null,
+      startAudio: false,
+      playAudio: false,
+      audioPath: AudioUtils.MusicDirectoryPath + '/test.aac',
+      stoppedRecording: false,
+
+      audioSettings: {
+        SampleRate: 22050,
+        Channels: 1,
+        AudioQuality: 'Low',
+        AudioEncoding: 'aac',
+        MeteringEnabled: true,
+        IncludeBase64: true,
+        AudioEncodingBitRate: 32000,
+      },
     };
     this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
     this.selectVideoTapped = this.selectVideoTapped.bind(this);
   }
+
+  componentDidMount() {
+    this.checkPermission().then(async hasPermission => {
+      this.setState({ hasPermission });
+      if (!hasPermission) {
+        return;
+      }
+      await AudioRecorder.prepareRecordingAtPath(
+        this.state.audioPath,
+        this.state.audioSettings,
+      );
+      AudioRecorder.onProgress = data => {
+        console.log(data, 'onProgress data');
+      };
+      AudioRecorder.onFinished = data => {
+        console.log(data, 'on finish');
+      };
+    });
+  }
+
+  checkPermission() {
+    if (Platform.OS !== 'android') {
+      return Promise.resolve(true);
+    }
+    const rationale = {
+      title: 'Microphone Permission',
+      message:
+        'AudioExample needs access to your microphone so you can record audio.',
+    };
+    return PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      rationale,
+    ).then(result => {
+      console.log('Permission result:', result);
+      return result === true || result === PermissionsAndroid.RESULTS.GRANTED;
+    });
+  }
+
+  prepareRecordingPath(audioPath) {
+    AudioRecorder.prepareRecordingAtPath(audioPath, {
+      SampleRate: 22050,
+      Channels: 1,
+      AudioQuality: 'Low',
+      AudioEncoding: 'aac',
+      AudioEncodingBitRate: 32000,
+    });
+  }
+
+  handleAudio = async () => {
+    if (!this.state.startAudio) {
+      if (this.state.stoppedRecording) {
+        this.prepareRecordingPath(this.state.audioPath);
+      }
+      this.setState({
+        startAudio: true,
+      });
+      await AudioRecorder.startRecording();
+    } else {
+      this.setState({ startAudio: false, stoppedRecording: true });
+      await AudioRecorder.stopRecording();
+      const { audioPath } = this.state;
+      const fileName = 'test.aac';
+      const file = {
+        uri: Platform.OS === 'ios' ? audioPath : `file://${audioPath}`,
+        name: fileName,
+        type: 'audio/aac',
+      };
+      this.setState({
+        photoSource: null,
+        videoSource: null,
+        audioSource: file,
+      });
+
+      // FirebaseService.uploadAudio(file).then(url => {
+      //   const message = {};
+      //   message._id = this.messageIdGenerator();
+      //   message.createdAt = Date.now();
+      //   message.user = {
+      //     _id: FirebaseService.getUid(),
+      //     name: `${user.name}`,
+      //     avatar: user.avatar,
+      //   };
+      //   message.text = '';
+      //   message.audio = url;
+      //   message.messageType = 'audio';
+      //   console.log('message' + JSON.stringify(message));
+      //   FirebaseService.sendMessageAudio(message);
+      // });
+    }
+  };
 
   sendHelp = () => {
     alert(this.state.message);
@@ -66,7 +175,7 @@ export default class CreateSOSScreen extends Component {
         // You can also display the image using data:
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
         var path = '';
-        if (Platform.OS == 'ios') {
+        if (Platform.OS === 'ios') {
           path = response.uri.toString();
         } else {
           path = response.path.toString();
@@ -76,17 +185,21 @@ export default class CreateSOSScreen extends Component {
           path: path,
           fileName: response.fileName,
         };
-
-        FirebaseService.uploadImage(image)
-          .then(url => {
-            alert('uploaded');
-            this.setState({
-              photoSource: url,
-              videoSource: null,
-              audioSource: null,
-            });
-          })
-          .catch(error => console.log(error));
+        this.setState({
+          photoSource: image,
+          videoSource: null,
+          audioSource: null,
+        });
+        // FirebaseService.uploadImage(image)
+        //   .then(url => {
+        //     alert('uploaded');
+        //     this.setState({
+        //       photoSource: url,
+        //       videoSource: null,
+        //       audioSource: null,
+        //     });
+        //   })
+        //   .catch(error => console.log(error));
       }
     });
   }
@@ -162,8 +275,14 @@ export default class CreateSOSScreen extends Component {
           </View>
         </View>
         <View style={styles.viewMedia}>
-          <TouchableOpacity style={styles.mediaTouchable}>
-            <Icon name="microphone" size={40} color="#ffffff" />
+          <TouchableOpacity
+            style={styles.mediaTouchable}
+            onPress={this.handleAudio}>
+            <Icon
+              name="microphone"
+              size={40}
+              color={this.state.startAudio ? 'red' : 'white'}
+            />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.mediaTouchable}
@@ -179,7 +298,7 @@ export default class CreateSOSScreen extends Component {
         {this.state.photoSource === null ? null : (
           <Image
             style={styles.avatar}
-            source={{ uri: this.state.photoSource }}
+            source={{ uri: this.state.photoSource.image }}
           />
         )}
         {this.state.videoSource && (
@@ -192,6 +311,46 @@ export default class CreateSOSScreen extends Component {
             onError={this.videoError} // Callback when video cannot be loaded
             style={styles.backgroundVideo}
           />
+        )}
+        {this.state.audioSource && (
+          <TouchableOpacity
+            style={{
+              marginTop: 10,
+              width: 150,
+              height: 70,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: Colors.appColor,
+              borderRadius: 25,
+            }}
+            onPress={() => {
+              console.log(
+                JSON.stringify(this.state.audioSource.uri) + ' props ne',
+              );
+
+              this.setState({
+                playAudio: true,
+              });
+
+              const sound = new Sound(this.state.audioPath, '', error => {
+                if (error) {
+                  console.log('failed to load the sound', error);
+                }
+                this.setState({ playAudio: false });
+                sound.play(success => {
+                  console.log(success, 'success play');
+                  if (!success) {
+                    Alert.alert('There was an error playing this audio');
+                  }
+                });
+              });
+            }}>
+            <Ionicons
+              name="ios-play"
+              size={50}
+              color={this.state.playAudio ? 'red' : 'white'}
+            />
+          </TouchableOpacity>
         )}
         <View style={styles.viewButton}>
           <Button
