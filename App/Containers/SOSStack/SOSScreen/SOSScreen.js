@@ -1,12 +1,26 @@
 import React, { Component } from 'react';
-import { Text, View, FlatList, RefreshControl } from 'react-native';
+import {
+  Text,
+  View,
+  FlatList,
+  RefreshControl,
+  TouchableOpacity,
+  Dimensions,
+  ScrollView,
+} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-community/async-storage';
+import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+import Modal from 'react-native-modal';
 
 import { HeaderUI, CaseView } from '../../../Components';
 import { MESSAGES } from '../../../Utils/Constants';
 import { APIGetCase } from '../../../Services/APIGetCase';
 import NavigationService from '../../../Services/NavigationService';
+
+const { width, height } = Dimensions.get('window');
 
 const CASE = [
   {
@@ -90,6 +104,7 @@ export class SOSScreen extends Component {
       phoneNumber: '',
       isRefreshing: false, //for pull to refresh
       item: this.props.navigation.getParam('item', null),
+      isModalVisible: false,
     };
   }
 
@@ -170,10 +185,105 @@ export class SOSScreen extends Component {
     // }
   }
 
+  _toggleModal = () =>
+    this.setState({ isModalVisible: !this.state.isModalVisible });
+
   render() {
     return (
       <View style={{ flex: 1, alignItems: 'center' }}>
         <HeaderUI title="Danh Sách Sự Cố" />
+        <Modal
+          isVisible={this.state.isModalVisible}
+          animationInTiming={1000}
+          animationOutTiming={1000}
+          backdropTransitionInTiming={800}
+          backdropTransitionOutTiming={800}>
+          <View
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View
+              style={{
+                flex: 0.7,
+                width: width * 0.8,
+                backgroundColor: 'white',
+                alignItems: 'center',
+              }}>
+              <View
+                style={{
+                  width: width * 0.8,
+                  height: 44,
+                  backgroundColor: '#91b1db',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <TouchableOpacity
+                  style={{
+                    width: 44,
+                    height: 44,
+                    justifyContent: 'center',
+                    marginLeft: 10,
+                  }}
+                  onPress={this._toggleModal}>
+                  <FontAwesome name="close" color="black" size={35} />
+                </TouchableOpacity>
+                <Text style={{ fontSize: 20, fontWeight: '600' }}>Bộ Lọc</Text>
+                <View style={{ width: 44, height: 44 }} />
+              </View>
+              <View style={{ width: width * 0.7, justifyContent: 'center' }}>
+                <TouchableOpacity
+                  style={{
+                    width: width * 0.7,
+                    height: 44,
+                    borderBottomColor: 'black',
+                    borderBottomWidth: 1,
+                    justifyContent: 'center',
+                  }}>
+                  <Text>Tất cả</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    width: width * 0.7,
+                    height: 44,
+                    borderBottomColor: 'black',
+                    borderBottomWidth: 1,
+                    justifyContent: 'center',
+                  }}>
+                  <Text>Chưa xử lý</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    width: width * 0.7,
+                    height: 44,
+                    borderBottomColor: 'black',
+                    borderBottomWidth: 1,
+                    justifyContent: 'center',
+                  }}>
+                  <Text>Đang xử lý</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    width: width * 0.7,
+                    height: 44,
+                    borderBottomColor: 'black',
+                    borderBottomWidth: 1,
+                    justifyContent: 'center',
+                  }}>
+                  <Text>Thành công</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    width: width * 0.7,
+                    height: 44,
+                    borderBottomColor: 'black',
+                    borderBottomWidth: 1,
+                    justifyContent: 'center',
+                  }}>
+                  <Text>Thất bại</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
         {this.state.spinner === true ? (
           <Spinner
             visible={this.state.spinner}
@@ -182,18 +292,37 @@ export class SOSScreen extends Component {
             size="large"
           />
         ) : (
-          <FlatList
-            data={this.state.case}
-            extraData={this.state}
-            showsVerticalScrollIndicator={false}
-            renderItem={this._renderItem}
-            refreshControl={
-              <RefreshControl
-                refreshing={this.state.isRefreshing}
-                onRefresh={this.onRefresh.bind(this)}
-              />
-            }
-          />
+          <ScrollView
+            style={{
+              marginTop: 10,
+              width: width * 0.9,
+            }}
+            showsVerticalScrollIndicator={false}>
+            <TouchableOpacity
+              onPress={this._toggleModal}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                alignSelf: 'flex-end',
+              }}>
+              <Feather name="filter" size={30} color="black" />
+              <Text style={{ fontSize: 17 }}>
+                Tất cả: ({this.state.case.length})
+              </Text>
+            </TouchableOpacity>
+            <FlatList
+              data={this.state.case}
+              extraData={this.state}
+              showsVerticalScrollIndicator={false}
+              renderItem={this._renderItem}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.isRefreshing}
+                  onRefresh={this.onRefresh.bind(this)}
+                />
+              }
+            />
+          </ScrollView>
         )}
       </View>
     );

@@ -72,6 +72,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+    marginBottom: 20,
   },
   buttonHelpText: {
     color: 'white',

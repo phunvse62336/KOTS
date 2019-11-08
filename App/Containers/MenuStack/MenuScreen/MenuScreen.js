@@ -32,6 +32,14 @@ export class MenuScreen extends Component {
     }
   };
 
+  refresh = data => {
+    this.setState(prevState => {
+      let user = Object.assign({}, prevState.user); // creating copy of state variable jasper
+      user.name = data; // update the name property, assign a new value
+      return { user }; // return new object jasper object
+    });
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -76,7 +84,9 @@ export class MenuScreen extends Component {
               <TouchableOpacity
                 style={styles.viewTouch}
                 onPress={() =>
-                  this.props.navigation.navigate('UpdateProfileScreen')
+                  this.props.navigation.navigate('UpdateProfileScreen', {
+                    onGoBack: this.refresh,
+                  })
                 }>
                 <Icon name="user-plus" size={30} style={styles.iconStyle} />
                 <Text style={styles.textTouch}>Sửa đổi profile</Text>

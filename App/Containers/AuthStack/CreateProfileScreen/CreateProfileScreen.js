@@ -16,6 +16,8 @@ import { HeaderUI, Button } from '../../../Components';
 import styles from './CreateProfileScreenStyles';
 import { Colors } from '../../../Themes';
 import { APIUpdateKnightProfile } from '../../../Services/APIUpdateKnightProfile';
+import { APIGetListTeam } from '../../../Services/APIGetListTeam';
+
 import { MESSAGES } from '../../../Utils/Constants';
 
 const { height, width } = Dimensions.get('window');
@@ -29,10 +31,12 @@ export class CreateProfileScreen extends Component {
       name: '',
       gender: 1,
       address: '',
-      dayOfBirth: moment(),
+      dateOfBirth: moment(),
       token: '',
       phoneNumber: '',
       spinner: false,
+      teamId: '',
+      listTeam: [],
     };
   }
 
@@ -67,10 +71,11 @@ export class CreateProfileScreen extends Component {
     const {
       name,
       gender,
-      dayOfBirth,
+      dateOfBirth,
       address,
       phoneNumber,
       token,
+      teamId,
     } = this.state;
 
     if (name !== '' || address !== '') {
@@ -81,6 +86,8 @@ export class CreateProfileScreen extends Component {
         address,
         gender,
         token,
+        dateOfBirth,
+        teamId,
       );
       if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
         console.log(JSON.stringify(responseStatus));
@@ -109,10 +116,20 @@ export class CreateProfileScreen extends Component {
     let fcmToken = await AsyncStorage.getItem('fcmToken');
     let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
 
-    this.setState({
-      token: fcmToken,
-      phoneNumber: phoneNumber,
-    });
+    let responseStatus = await APIGetListTeam();
+    if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
+      this.setState({
+        token: fcmToken,
+        phoneNumber: phoneNumber,
+        listTeam: responseStatus.data,
+      });
+    } else {
+      alert('Không thể lấy danh sách cách đội. \nVui lòng thử lại sau!');
+      this.setState({
+        token: fcmToken,
+        phoneNumber: phoneNumber,
+      });
+    }
   }
 
   render() {
@@ -157,7 +174,7 @@ export class CreateProfileScreen extends Component {
           </View>
         </View>
         <DatePicker
-          date={this.state.dayOfBirth}
+          date={this.state.dateOfBirth}
           mode="date"
           androidMode="spinner"
           placeholder="select date"
@@ -177,7 +194,7 @@ export class CreateProfileScreen extends Component {
             // ... You can check the source to find the other keys.
           }}
           onDateChange={date => {
-            this.setState({ dayOfBirth: date });
+            this.setState({ dateOfBirth: date });
           }}
         />
         <Button

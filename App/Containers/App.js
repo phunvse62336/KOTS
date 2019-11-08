@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import AppNavigation from '../Navigation/AppNavigation';
 import NavigationService from '../Services/NavigationService';
 
-import {NOTIFICATION_CHANNEL} from '../Utils/Constants';
+import { NOTIFICATION_CHANNEL } from '../Utils/Constants';
 
 export class App extends Component {
   constructor(props) {
@@ -66,6 +66,30 @@ export class App extends Component {
     return false;
   };
 
+  async requestWritePermission() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'KOTS Need Write External Storage Permission',
+          message:
+            'KOTS needs access to write external storage ' +
+            'so you can use some fetureas.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the camera');
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
   getLocationUpdates = async () => {
     const hasLocationPermission = await this.hasLocationPermission();
 
@@ -73,14 +97,14 @@ export class App extends Component {
       return;
     }
 
-    this.setState({updatesEnabled: true}, () => {
+    this.setState({ updatesEnabled: true }, () => {
       this.watchId = Geolocation.watchPosition(
         position => {
-          this.setState({location: position});
+          this.setState({ location: position });
           console.log(position);
         },
         error => {
-          this.setState({location: error});
+          this.setState({ location: error });
           console.log(error);
         },
         {
@@ -135,6 +159,7 @@ export class App extends Component {
 
   async componentDidMount() {
     let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
+    this.requestWritePermission();
     var firebaseConfig = {
       apiKey: 'AIzaSyBL43OazIvXF1WeTnLaXiYQl0xJag5ALoo',
       authDomain: 'myfirebase-b1225.firebaseapp.com',

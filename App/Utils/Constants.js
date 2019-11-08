@@ -15,8 +15,8 @@ export const MESSAGES = {
     PENDING: 4,
   },
   TYPE_CASE: {
-    SOS: 1,
-    NORMAL: 2,
+    SOS: 2,
+    NORMAL: 1,
   },
 };
 
@@ -47,3 +47,5 @@ export const GET_POLICECONTACT = BASE_URL + 'getPoliceContact';
 export const GET_NEWS = BASE_URL + 'getNews';
 
 export const REMOVE_TOKEN_API = BASE_URL + 'removeToken';
+
+export const GET_LIST_TEAM_API = BASE_URL + 'getTeam';

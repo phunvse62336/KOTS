@@ -34,8 +34,10 @@ export default class UpdateProfileScreen extends Component {
       name: '',
       gender: undefined,
       address: '',
-      // dayOfBirth: moment(),
+      dateOfBirth: '',
       edit: false,
+      token: '',
+      spinner: false,
     };
   }
 
@@ -68,22 +70,43 @@ export default class UpdateProfileScreen extends Component {
   );
 
   onUpdate = async () => {
-    const { phoneNumber, name, address, gender, edit } = this.state;
-    if (this.state.edit === false) {
+    const {
+      phoneNumber,
+      name,
+      address,
+      gender,
+      edit,
+      dateOfBirth,
+      token,
+    } = this.state;
+    if (edit === false) {
       this.setState({ edit: true });
     } else {
       this.setState({ spinner: true });
+      console.log(
+        phoneNumber,
+        name,
+        address,
+        gender,
+        token,
+        dateOfBirth,
+        token,
+      );
       let responseStatus = await APIUpdateKnightProfile(
         phoneNumber,
         name,
         address,
         gender,
+        token,
+        dateOfBirth,
+        null,
       );
       if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
         console.log(JSON.stringify(responseStatus));
         this.setState({
           toast: true,
           spinner: false,
+          edit: false,
         });
         setTimeout(
           () =>
@@ -92,12 +115,13 @@ export default class UpdateProfileScreen extends Component {
             }),
           3000,
         ); // hide toast after 5s
-        await AsyncStorage.setItem('CITIZENNAME', this.state.name);
+        await AsyncStorage.setItem('USER', JSON.stringify(responseStatus.data));
         this.props.navigation.state.params.onGoBack(this.state.name);
         this.props.navigation.goBack();
       } else {
         this.setState({
           spinner: false,
+          edit: false,
         });
         alert('Không gửi được. Vui lòng thử lại sau');
       }
@@ -115,6 +139,8 @@ export default class UpdateProfileScreen extends Component {
   async getLoadedItem() {}
 
   async componentDidMount() {
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+
     let user = await AsyncStorage.getItem('USER');
     let userInfo = JSON.parse(user);
     // alert(user);
@@ -123,6 +149,8 @@ export default class UpdateProfileScreen extends Component {
       name: userInfo.name,
       gender: parseInt(userInfo.gender),
       address: userInfo.address,
+      dateOfBirth: userInfo.dateOfBirth,
+      token: fcmToken,
     });
     // this.getLoadedItem();
   }
@@ -132,6 +160,12 @@ export default class UpdateProfileScreen extends Component {
     let date = moment();
     return (
       <SafeAreaView style={styles.container}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Đang Xử Lý'}
+          textStyle={{ color: '#fff', zIndex: 0 }}
+          size="large"
+        />
         <View style={styles.inputViewContainer}>
           <View style={styles.inputViewLabel}>
             <Text style={styles.colorText}>Họ Tên</Text>
@@ -166,35 +200,36 @@ export default class UpdateProfileScreen extends Component {
             {this.renderButton(gender, 2, this.onGenderClick)}
           </View>
         </View>
-        {/* <DatePicker
-       style={{width: 200}}
-       date={this.state.dayOfBirth}
-       mode="date"
-       androidMode="spinner"
-       placeholder="select date"
-       format="DD-MM-YYYY"
-       maxDate={date}
-       confirmBtnText="Confirm"
-       cancelBtnText="Cancel"
-       style={{
-         marginTop: 25,
-         width: width * 0.8,
-         alignItems: 'center',
-       }}
-       customStyles={{
-         dateInput: {
-           borderRadius: 10,
-           borderColor: Colors.appColor,
-           borderWidth: 2,
-           height: 44,
-         },
-         dateText: {color: Colors.appColor},
-         // ... You can check the source to find the other keys.
-       }}
-       onDateChange={date => {
-         this.setState({dayOfBirth: date});
-       }}
-     /> */}
+        <DatePicker
+          disabled={!this.state.edit}
+          style={{ width: 200 }}
+          date={this.state.dateOfBirth}
+          mode="date"
+          androidMode="spinner"
+          placeholder="select date"
+          format="DD-MM-YYYY"
+          maxDate={date}
+          confirmBtnText="Confirm"
+          cancelBtnText="Cancel"
+          style={{
+            marginTop: 25,
+            width: width * 0.8,
+            alignItems: 'center',
+          }}
+          customStyles={{
+            dateInput: {
+              borderRadius: 10,
+              borderColor: Colors.appColor,
+              borderWidth: 2,
+              height: 44,
+            },
+            dateText: { color: Colors.appColor },
+            // ... You can check the source to find the other keys.
+          }}
+          onDateChange={date => {
+            this.setState({ dateOfBirth: date });
+          }}
+        />
         <Button
           label={this.state.edit === false ? 'Sửa' : 'Cập Nhật'}
           buttonTextStyle={styles.updateTextButton}

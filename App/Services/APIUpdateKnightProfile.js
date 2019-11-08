@@ -7,6 +7,8 @@ export const APIUpdateKnightProfile = async (
   address,
   gender,
   token,
+  dayOfBirth,
+  teamId,
 ) => {
   try {
     let response = await axios
@@ -15,7 +17,9 @@ export const APIUpdateKnightProfile = async (
         name: name,
         address: address,
         gender: gender,
-        token: token,
+        token: token === null ? null : token,
+        dateOfBirth: dayOfBirth,
+        teamId: teamId === null ? null : teamId,
       })
       .then(res => {
         console.log(res);

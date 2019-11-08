@@ -124,7 +124,7 @@ export class HomeScreen extends Component {
         } else {
           coordinate.timing(newCoordinate).start();
         }
-        FirebaseService.sendLocation(newCoordinate, this.state.user);
+        // FirebaseService.sendLocation(newCoordinate, this.state.user);
 
         this.setState({
           latitude,
@@ -171,7 +171,15 @@ export class HomeScreen extends Component {
     const { longitude, latitude, phoneNumber } = this.state;
     if (name === 'bt_sos') {
       this.setState({ spinner: true });
-      let responseStatus = await APISendSOS(phoneNumber, longitude, latitude);
+      let responseStatus = await APISendSOS(
+        phoneNumber,
+        'Help Me',
+        longitude,
+        latitude,
+        MESSAGES.TYPE_CASE.SOS,
+        null,
+        null,
+      );
 
       if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
         console.log(JSON.stringify(responseStatus));

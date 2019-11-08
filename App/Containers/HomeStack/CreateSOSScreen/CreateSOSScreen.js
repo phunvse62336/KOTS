@@ -19,11 +19,16 @@ import Video from 'react-native-video';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { AudioRecorder, AudioUtils } from 'react-native-audio';
 import Sound from 'react-native-sound';
+import Spinner from 'react-native-loading-spinner-overlay';
+import Toast from 'react-native-root-toast';
 
 import Colors from '../../../Themes/Colors';
 import Button from '../../../Components/Button';
 import FirebaseService from '../../../Services/FirebaseService';
+import { APISendSOS } from '../../../Services/APISendSOS';
 import styles from './CreateSOSScreenStyles';
+import { MESSAGES } from '../../../Utils/Constants';
+
 const { width, height } = Dimensions.get('window');
 
 export default class CreateSOSScreen extends Component {
@@ -31,6 +36,9 @@ export default class CreateSOSScreen extends Component {
     super(props);
     this.state = {
       text: '',
+      spinner: false,
+      toast: false,
+
       height: 0,
       latitude: this.props.navigation.state.params.latitude,
       longitude: this.props.navigation.state.params.longitude,
@@ -149,7 +157,60 @@ export default class CreateSOSScreen extends Component {
   };
 
   sendHelp = () => {
-    alert(this.state.message);
+    const { longitude, latitude, phoneNumber, message } = this.state;
+
+    this.setState({ spinner: true });
+    if (this.state.photoSource != null) {
+      FirebaseService.uploadImage(this.state.photoSource)
+        .then(async url => {
+          console.log(url);
+          let responseStatus = await APISendSOS(
+            phoneNumber,
+            message,
+            longitude,
+            latitude,
+            MESSAGES.TYPE_CASE.NORMAL,
+            url,
+            null,
+          );
+
+          if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
+            console.log(JSON.stringify(responseStatus));
+            this.setState({
+              toast: true,
+              spinner: false,
+            });
+            setTimeout(() => {
+              this.setState({
+                toast: false,
+              });
+            }, 3000); // hide toast after 5s
+            setTimeout(() => {
+              this.props.navigation.navigate('HomeScreen');
+            }, 4000); // hide toast after 5s
+          } else {
+            this.setState({
+              spinner: false,
+            });
+
+            alert('Không gửi được. Vui lòng thử lại sau');
+          }
+
+          setTimeout(
+            () =>
+              this.setState({
+                toast: false,
+              }),
+            5000,
+          ); // hide toast after 5s
+        })
+        .catch(error => {
+          console.log(error);
+          this.setState({
+            spinner: false,
+          });
+        });
+    }
   };
 
   selectPhotoTapped() {
@@ -241,6 +302,20 @@ export default class CreateSOSScreen extends Component {
           justifyContent: 'flex-start',
           alignItems: 'center',
         }}>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Đang Xử Lý'}
+          textStyle={{ color: '#fff' }}
+          size="large"
+        />
+        <Toast
+          visible={this.state.toast}
+          position={Toast.positions.CENTER}
+          shadow={false}
+          animation={false}
+          hideOnPress={true}>
+          Gửi Thành Công
+        </Toast>
         <View style={styles.viewCase}>
           <Text style={styles.pickerText}>Trường Hợp</Text>
           <View style={styles.viewPicker}>
