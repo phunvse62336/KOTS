@@ -94,8 +94,18 @@ export class HomeScreen extends Component {
         markerCoordinates: listLocation,
       });
     });
-
+    const { navigation } = this.props;
+    //Adding an event listner om focus
+    //So whenever the screen will have focus it will set the state to zero
+    this.focusListener = navigation.addListener('didFocus', () =>
+      this.onRefresh(),
+    );
     this.watchLocation();
+  }
+
+  async onRefresh() {
+    let user = await AsyncStorage.getItem('USER');
+    this.setState({ user: JSON.parse(user) });
   }
 
   componentWillUnmount() {

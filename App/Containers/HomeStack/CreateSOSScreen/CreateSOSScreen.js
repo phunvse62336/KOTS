@@ -210,6 +210,56 @@ export default class CreateSOSScreen extends Component {
             spinner: false,
           });
         });
+    } else if (this.state.audioSource != null) {
+      FirebaseService.uploadAudio(this.state.audioSource)
+        .then(async url => {
+          console.log(url);
+          let responseStatus = await APISendSOS(
+            phoneNumber,
+            message,
+            longitude,
+            latitude,
+            MESSAGES.TYPE_CASE.NORMAL,
+            null,
+            url,
+          );
+
+          if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
+            console.log(JSON.stringify(responseStatus));
+            this.setState({
+              toast: true,
+              spinner: false,
+            });
+            setTimeout(() => {
+              this.setState({
+                toast: false,
+              });
+            }, 3000); // hide toast after 5s
+            setTimeout(() => {
+              this.props.navigation.navigate('HomeScreen');
+            }, 4000); // hide toast after 5s
+          } else {
+            this.setState({
+              spinner: false,
+            });
+
+            alert('Không gửi được. Vui lòng thử lại sau');
+          }
+
+          setTimeout(
+            () =>
+              this.setState({
+                toast: false,
+              }),
+            5000,
+          ); // hide toast after 5s
+        })
+        .catch(error => {
+          console.log(error);
+          this.setState({
+            spinner: false,
+          });
+        });
     }
   };
 
@@ -318,7 +368,7 @@ export default class CreateSOSScreen extends Component {
         </Toast>
         <View style={styles.viewCase}>
           <Text style={styles.pickerText}>Trường Hợp</Text>
-          <View style={styles.viewPicker}>
+          {/* <View style={styles.viewPicker}>
             <Picker
               selectedValue={this.state.language}
               style={styles.casePicker}
@@ -328,7 +378,7 @@ export default class CreateSOSScreen extends Component {
               <Picker.Item label="Java" value="java" />
               <Picker.Item label="JavaScript" value="js" />
             </Picker>
-          </View>
+          </View> */}
         </View>
         <View style={styles.viewMessage}>
           <View style={styles.inputViewContainer}>
@@ -411,8 +461,9 @@ export default class CreateSOSScreen extends Component {
                 if (error) {
                   console.log('failed to load the sound', error);
                 }
-                this.setState({ playAudio: false });
                 sound.play(success => {
+                  this.setState({ playAudio: false });
+
                   console.log(success, 'success play');
                   if (!success) {
                     Alert.alert('There was an error playing this audio');
