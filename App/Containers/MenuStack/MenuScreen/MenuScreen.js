@@ -77,10 +77,6 @@ export class MenuScreen extends Component {
           <View style={styles.viewInfo}>
             <Text style={styles.textSettingTitle}>Tài khoản</Text>
             <View style={styles.viewFunctionInfo}>
-              <TouchableOpacity style={styles.viewTouch}>
-                <Icon name="user" size={30} style={styles.iconStyle} />
-                <Text style={styles.textTouch}>Xem thông tin chi tiết</Text>
-              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.viewTouch}
                 onPress={() =>

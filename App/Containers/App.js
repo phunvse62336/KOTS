@@ -8,7 +8,10 @@ import {
   AppState,
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import firebase from 'react-native-firebase';
+import firebase, {
+  Notification,
+  NotificationOpen,
+} from 'react-native-firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 import AppNavigation from '../Navigation/AppNavigation';
 import NavigationService from '../Services/NavigationService';
@@ -179,6 +182,28 @@ export class App extends Component {
     firebase.notifications().android.createChannel(channel);
     this.checkPermission();
     this.createNotificationListeners();
+    this.notificationOpenedListenerClose = firebase
+      .notifications()
+      .getInitialNotification()
+      .then((notificationOpen: NotificationOpen) => {
+        if (notificationOpen) {
+          // App was opened by a notification
+          // Get the action triggered by the notification being opened
+          const action = notificationOpen.action;
+          // Get information about the notification that was opened
+          const notification: Notification = notificationOpen.notification;
+          NavigationService.navigate('SOSDetailScreen', {
+            item: JSON.parse(notification.data.item),
+            phoneNumber: phoneNumber,
+          });
+          // alert(notification.data);
+          console.log('NOTIFICATION ' + JSON.stringify(notification.data.item));
+
+          firebase
+            .notifications()
+            .removeDeliveredNotification(notification.notificationId);
+        }
+      });
 
     this.notificationOpenedListener = firebase
       .notifications()
@@ -192,7 +217,7 @@ export class App extends Component {
           phoneNumber: phoneNumber,
         });
         // alert(notification.data);
-        console.log(notification.data.item);
+        console.log('NOTIFICATION ' + JSON.stringify(notification.data.item));
 
         firebase
           .notifications()
@@ -201,6 +226,7 @@ export class App extends Component {
   }
 
   componentWillUnmount() {
+    this.notificationOpenedListenerClose();
     this.notificationOpenedListener();
   }
 

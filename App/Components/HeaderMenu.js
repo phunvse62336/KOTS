@@ -6,6 +6,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Geolocation from 'react-native-geolocation-service';
 
 import { APICloseCase } from '../Services/APICloseCase';
+import { APILeaveCase } from '../Services/APILeaveCase';
+
 import { MESSAGES } from '../Utils/Constants';
 import { Colors } from '../Themes';
 
@@ -75,10 +77,61 @@ export default class HeaderMenu extends React.Component<props> {
     if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
       console.log(JSON.stringify(responseStatus));
       alert('Đóng thành công');
-      this.props.navigation.navigate('SOSScreen', { refreshMessage: '1' });
+      this.props.navigation.navigate('SOSScreen');
     } else {
       alert('Không gửi được. Vui lòng thử lại sau');
     }
+  };
+
+  caseFailed = async () => {
+    const { phoneNumber, longitude, latitude, item } = this.state;
+    console.log(
+      phoneNumber + ' ' + 2 + ' ' + longitude + ' ' + latitude + ' ' + item.id,
+    );
+    let responseStatus = await APICloseCase(
+      phoneNumber,
+      longitude,
+      latitude,
+      3,
+      item.id,
+    );
+    if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
+      console.log(JSON.stringify(responseStatus));
+      alert('Đóng thành công');
+      this.props.navigation.navigate('SOSScreen');
+    } else {
+      alert('Không gửi được. Vui lòng thử lại sau');
+    }
+  };
+
+  leaveCase = () => {
+    const { phoneNumber, item } = this.state;
+    console.log(phoneNumber + ' ' + 2 + ' ' + ' ' + item.id);
+
+    Alert.alert(
+      'Rời Sự Cố',
+      'Vui lòng xác nhận bạn muốn rời khỏi sự cố!',
+      [
+        {
+          text: 'Hủy',
+          onPress: () => console.log('Ask me later pressed'),
+        },
+        {
+          text: 'Xác Nhận',
+          onPress: async () => {
+            let responseStatus = await APILeaveCase(phoneNumber, item.id);
+            if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
+              console.log(JSON.stringify(responseStatus));
+              alert('Bạn đã rời khỏi sự cố');
+              this.props.navigation.navigate('SOSScreen');
+            } else {
+              alert('Không gửi được. Vui lòng thử lại sau');
+            }
+          },
+        },
+      ],
+      { cancelable: false },
+    );
   };
 
   voiceCall = () => {
@@ -99,7 +152,9 @@ export default class HeaderMenu extends React.Component<props> {
         },
         {
           text: 'Thất Bại',
-          onPress: () => console.log('Cancel Pressed'),
+          onPress: () => {
+            this.caseFailed();
+          },
           style: 'cancel',
         },
         {
@@ -129,15 +184,12 @@ export default class HeaderMenu extends React.Component<props> {
             <Feather name="more-vertical" color={Colors.appColor} size={30} />
           </TouchableOpacity>
         }>
-        <MenuItem
-          onPress={this.voiceCall}
-          textStyle={{ color: '#000', fontSize: 16 }}>
-          Gọi đồng đội
-        </MenuItem>
         <MenuItem textStyle={{ color: '#000', fontSize: 16 }}>
           Thông tin sự cố
         </MenuItem>
-        <MenuItem textStyle={{ color: '#000', fontSize: 16 }}>
+        <MenuItem
+          onPress={this.leaveCase}
+          textStyle={{ color: '#000', fontSize: 16 }}>
           Rời sự cố
         </MenuItem>
         <MenuItem

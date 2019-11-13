@@ -6,6 +6,7 @@ import {
   TextInput,
   Dimensions,
   TouchableOpacity,
+  Picker,
 } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import moment from 'moment';
@@ -31,12 +32,10 @@ export class CreateProfileScreen extends Component {
       name: '',
       gender: 1,
       address: '',
-      dateOfBirth: moment(),
+      dateOfBirth: new Date(),
       token: '',
       phoneNumber: '',
       spinner: false,
-      teamId: '',
-      listTeam: [],
     };
   }
 
@@ -75,7 +74,6 @@ export class CreateProfileScreen extends Component {
       address,
       phoneNumber,
       token,
-      teamId,
     } = this.state;
 
     if (name !== '' || address !== '') {
@@ -87,18 +85,18 @@ export class CreateProfileScreen extends Component {
         gender,
         token,
         dateOfBirth,
-        teamId,
+        null,
       );
       if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
         console.log(JSON.stringify(responseStatus));
         this.setState({
           spinner: false,
         });
-        await AsyncStorage.setItem('LOGIN', '1');
+        // await AsyncStorage.setItem('LOGIN', '1');
         await AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
         await AsyncStorage.setItem('USER', JSON.stringify(responseStatus.data));
 
-        this.props.navigation.navigate('AppNavigator');
+        this.props.navigation.navigate('JoinTeam');
       } else {
         this.setState({
           spinner: false,
@@ -112,24 +110,15 @@ export class CreateProfileScreen extends Component {
   };
 
   async componentDidMount() {
+    // alert(this.state.dateOfBirth);
     // let phoneNumber = await AsyncStorage.getItem('');
     let fcmToken = await AsyncStorage.getItem('fcmToken');
     let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
 
-    let responseStatus = await APIGetListTeam();
-    if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
-      this.setState({
-        token: fcmToken,
-        phoneNumber: phoneNumber,
-        listTeam: responseStatus.data,
-      });
-    } else {
-      alert('Không thể lấy danh sách cách đội. \nVui lòng thử lại sau!');
-      this.setState({
-        token: fcmToken,
-        phoneNumber: phoneNumber,
-      });
-    }
+    this.setState({
+      token: fcmToken,
+      phoneNumber: phoneNumber,
+    });
   }
 
   render() {
@@ -197,6 +186,7 @@ export class CreateProfileScreen extends Component {
             this.setState({ dateOfBirth: date });
           }}
         />
+
         <Button
           label="Cập Nhật"
           buttonTextStyle={styles.updateTextButton}

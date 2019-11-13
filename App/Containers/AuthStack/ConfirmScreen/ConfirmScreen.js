@@ -34,6 +34,7 @@ export class SignInScreen extends Component {
       confirmResult: this.props.navigation.state.params.confirmResult,
       user: this.props.navigation.state.params.user,
       token: '',
+      code: '',
     };
   }
 
@@ -53,7 +54,7 @@ export class SignInScreen extends Component {
         this.props.navigation.navigate('AppNavigator');
       }
     } else if (this.state.action === 'register') {
-      alert(token);
+      // alert(token);
       let responseStatus = await APICreateKnightProfile(phoneNumber, token);
       if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
         AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
@@ -62,11 +63,14 @@ export class SignInScreen extends Component {
     } else if (this.state.action === 'updateProfile') {
       AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
       this.props.navigation.navigate('CreateProfile');
+    } else if (this.state.action === 'joinTeam') {
+      AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
+      this.props.navigation.navigate('JoinTeam');
     }
   };
 
   _onFulfill(code) {
-    this.setState({ loading: true });
+    this.setState({ loading: true, code: code });
 
     const { confirmResult } = this.state;
     if (confirmResult && code.length) {
@@ -148,7 +152,7 @@ export class SignInScreen extends Component {
             buttonTextStyle={styles.registerText}
             buttonStyle={styles.registerButton}
             label="Xác Nhận"
-            buttonFunc={this.confirm}
+            buttonFunc={() => this._onFulfill(this.state.code)}
           />
         </View>
         <View style={styles.viewFooter}>

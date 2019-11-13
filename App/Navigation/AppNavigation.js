@@ -10,6 +10,7 @@ import SignInScreen from '../Containers/AuthStack/SignInScreen/SignInScreen';
 import ConfirmScreen from '../Containers/AuthStack/ConfirmScreen/ConfirmScreen';
 import RegisterScreen from '../Containers/AuthStack/RegisterScreen/RegisterScreen';
 import CreateProfileScreen from '../Containers/AuthStack/CreateProfileScreen/CreateProfileScreen';
+import JoinTeamScreen from '../Containers/AuthStack/JoinTeamScreen/JoinTeamScreen';
 
 import HomeScreen from '../Containers/HomeStack/HomeScreen/HomeScreen';
 import CreateSOSScreen from '../Containers/HomeStack/CreateSOSScreen/CreateSOSScreen';
@@ -67,6 +68,21 @@ const AuthNavigator = createStackNavigator(
 const CreateProfile = createStackNavigator({
   CreateProfileScreen: {
     screen: CreateProfileScreen,
+    navigationOptions: {
+      header: null,
+    },
+  },
+  JoinTeamScreen: {
+    screen: JoinTeamScreen,
+    navigationOptions: {
+      header: null,
+    },
+  },
+});
+
+const JoinTeam = createStackNavigator({
+  JoinTeamScreen: {
+    screen: JoinTeamScreen,
     navigationOptions: {
       header: null,
     },
@@ -223,6 +239,7 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
 const SwitchNavigation = createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
+    JoinTeam,
     AuthNavigator,
     CreateProfile,
     AppNavigator,

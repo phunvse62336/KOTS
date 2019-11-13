@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableOpacity, Text} from 'react-native';
+import { TouchableOpacity, Text } from 'react-native';
 import PropTypes from 'prop-types';
 
 export default class Button extends React.Component {
@@ -8,7 +8,7 @@ export default class Button extends React.Component {
   }
 
   render() {
-    const {buttonTextStyle, buttonStyle, label, buttonFunc} = this.props;
+    const { buttonTextStyle, buttonStyle, label, buttonFunc } = this.props;
     return (
       <TouchableOpacity style={buttonStyle} onPress={buttonFunc}>
         <Text style={buttonTextStyle}>{label}</Text>

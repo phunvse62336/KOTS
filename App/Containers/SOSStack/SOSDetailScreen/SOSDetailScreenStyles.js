@@ -1,7 +1,7 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
-const {height, width} = Dimensions.get('window');
-import {Colors} from '../../../Themes';
+const { height, width } = Dimensions.get('window');
+import { Colors } from '../../../Themes';
 
 export default StyleSheet.create({
   container: {
@@ -30,6 +30,14 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
   },
+  callButton: {
+    height: 44,
+    width: 100,
+    backgroundColor: Colors.appColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
   ignoreButton: {
     height: 44,
     width: 100,
@@ -38,5 +46,11 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
   },
-  buttonText: {fontSize: 15, color: 'white'},
+  buttonText: { fontSize: 15, color: 'white' },
+  avatar: {
+    width: width * 0.5,
+    height: width * 0.5,
+    marginTop: 20,
+    alignSelf: 'center',
+  },
 });

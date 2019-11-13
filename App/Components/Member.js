@@ -59,11 +59,11 @@ export default class Member extends Component {
           <Text style={styles.textName}>{item.name}</Text>
           <View style={styles.viewText}>
             <Text style={{ fontWeight: 'bold' }}>Điện thoại: </Text>
-            <Text>{item.phone}</Text>
+            <Text>{item.id}</Text>
           </View>
           <View style={styles.viewText}>
             <Text style={{ fontWeight: 'bold' }}>Tuổi: </Text>
-            <Text>{item.dob}</Text>
+            <Text>{item.dateOfBirth}</Text>
           </View>
           <View style={styles.viewText}>
             <Text style={{ fontWeight: 'bold' }}>Địa chỉ: </Text>
@@ -74,8 +74,11 @@ export default class Member extends Component {
           <View style={styles.viewText}>
             <Text style={{ fontWeight: 'bold' }}>Chức vụ: </Text>
             <Text
-              style={{ color: item.role === 1 ? Colors.appColor : 'black' }}>
-              {item.role === 1 ? 'Đội trưởng' : 'Đội viên'}
+              style={{
+                color:
+                  item.id === this.props.leaderId ? Colors.appColor : 'black',
+              }}>
+              {item.id === this.props.leaderId ? 'Đội trưởng' : 'Đội viên'}
             </Text>
           </View>
         </View>

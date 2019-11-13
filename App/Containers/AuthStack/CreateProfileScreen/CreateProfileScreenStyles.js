@@ -79,4 +79,12 @@ export default StyleSheet.create({
     width: width * 0.8,
     alignItems: 'center',
   },
+  teamPicker: {
+    height: 40,
+    width: '80%',
+    marginTop: 25,
+    borderColor: Colors.appColor,
+    borderWidth: 1,
+    marginBottom: 25,
+  },
 });

@@ -105,6 +105,8 @@ export class SOSScreen extends Component {
       isRefreshing: false, //for pull to refresh
       item: this.props.navigation.getParam('item', null),
       isModalVisible: false,
+      renderCase: [],
+      filterName: 'Tất Cả',
     };
   }
 
@@ -117,6 +119,7 @@ export class SOSScreen extends Component {
       console.log(JSON.stringify(responseStatus));
       this.setState({
         case: responseStatus.data,
+        renderCase: responseStatus.data,
         spinner: false,
         phoneNumber: phoneNumber,
       });
@@ -164,9 +167,11 @@ export class SOSScreen extends Component {
       console.log(JSON.stringify(responseStatus));
       this.setState({
         case: responseStatus.data,
+        renderCase: responseStatus.data,
         spinner: false,
         phoneNumber: phoneNumber,
         isRefreshing: false,
+        filterName: 'Tất Cả',
       });
     } else {
       this.setState({
@@ -187,6 +192,40 @@ export class SOSScreen extends Component {
 
   _toggleModal = () =>
     this.setState({ isModalVisible: !this.state.isModalVisible });
+
+  filterList = filter => {
+    const listCase = this.state.case;
+    if (filter === 5) {
+      this.setState({
+        renderCase: listCase,
+        filterName: 'Tất Cả',
+        isModalVisible: false,
+      });
+    } else {
+      const filterCase = listCase.filter(data => {
+        if (filter === 1 || filter === 4) {
+          return data.status === 1 || data.status === 4;
+        } else {
+          return data.status === filter;
+        }
+      });
+      var listName = '';
+      if (filter === 0) {
+        listName = 'Chưa xử lý';
+      } else if (filter === 1 || filter === 4) {
+        listName = 'Đang xử lý';
+      } else if (filter === 2) {
+        listName = 'Thành Công';
+      } else if (filter === 3) {
+        listName = 'Thất Bại';
+      }
+      this.setState({
+        renderCase: filterCase,
+        filterName: listName,
+        isModalVisible: false,
+      });
+    }
+  };
 
   render() {
     return (
@@ -237,7 +276,8 @@ export class SOSScreen extends Component {
                     borderBottomColor: 'black',
                     borderBottomWidth: 1,
                     justifyContent: 'center',
-                  }}>
+                  }}
+                  onPress={() => this.filterList(5)}>
                   <Text>Tất cả</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -247,7 +287,8 @@ export class SOSScreen extends Component {
                     borderBottomColor: 'black',
                     borderBottomWidth: 1,
                     justifyContent: 'center',
-                  }}>
+                  }}
+                  onPress={() => this.filterList(0)}>
                   <Text>Chưa xử lý</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -257,7 +298,8 @@ export class SOSScreen extends Component {
                     borderBottomColor: 'black',
                     borderBottomWidth: 1,
                     justifyContent: 'center',
-                  }}>
+                  }}
+                  onPress={() => this.filterList(1)}>
                   <Text>Đang xử lý</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -267,7 +309,8 @@ export class SOSScreen extends Component {
                     borderBottomColor: 'black',
                     borderBottomWidth: 1,
                     justifyContent: 'center',
-                  }}>
+                  }}
+                  onPress={() => this.filterList(2)}>
                   <Text>Thành công</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -277,7 +320,8 @@ export class SOSScreen extends Component {
                     borderBottomColor: 'black',
                     borderBottomWidth: 1,
                     justifyContent: 'center',
-                  }}>
+                  }}
+                  onPress={() => this.filterList(3)}>
                   <Text>Thất bại</Text>
                 </TouchableOpacity>
               </View>
@@ -307,11 +351,11 @@ export class SOSScreen extends Component {
               }}>
               <Feather name="filter" size={30} color="black" />
               <Text style={{ fontSize: 17 }}>
-                Tất cả: ({this.state.case.length})
+                {this.state.filterName}: ({this.state.renderCase.length})
               </Text>
             </TouchableOpacity>
             <FlatList
-              data={this.state.case}
+              data={this.state.renderCase}
               extraData={this.state}
               showsVerticalScrollIndicator={false}
               renderItem={this._renderItem}

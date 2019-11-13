@@ -7,6 +7,7 @@ import News from './News';
 import HeaderMenu from './HeaderMenu';
 import Police from './Police';
 import Member from './Member';
+import Team from './Team';
 
 export {
   FullScreenLoadingView,
@@ -18,4 +19,5 @@ export {
   HeaderMenu,
   Police,
   Member,
+  Team,
 };

@@ -5,10 +5,17 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  ScrollView,
+  Alert,
+  Image,
+  Linking,
 } from 'react-native';
 import MapView, { Marker, Callout, AnimatedRegion } from 'react-native-maps';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Geocoder from 'react-native-geocoder';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Modal from 'react-native-modal';
+import Sound from 'react-native-sound';
 
 import { MESSAGES } from '../../../Utils/Constants';
 import { APIConfirmCase } from '../../../Services/APIConfirmCase';
@@ -16,6 +23,7 @@ import { APIConfirmCase } from '../../../Services/APIConfirmCase';
 import { CustomCallout } from '../../../Components';
 
 import styles from './SOSDetailScreenStyles';
+import { Colors } from '../../../Themes';
 
 const { width, height } = Dimensions.get('window');
 
@@ -39,6 +47,8 @@ export class SOSDetailScreen extends Component {
         this.props.navigation.state.params.item.startLongitude,
       ),
       address: '',
+      message: this.props.navigation.state.params.item.message,
+      isModalVisible: false,
     };
   }
   getMapRegion = () => ({
@@ -109,9 +119,10 @@ export class SOSDetailScreen extends Component {
   };
 
   componentDidMount() {
-    // alert(JSON.stringify(this.state.item));
     this.getAddressFromPosition();
   }
+  _toggleModal = () =>
+    this.setState({ isModalVisible: !this.state.isModalVisible });
 
   render() {
     const { longitude, latitude } = this.state;
@@ -123,6 +134,139 @@ export class SOSDetailScreen extends Component {
           textStyle={{ color: '#fff' }}
           size="large"
         />
+
+        <Modal
+          isVisible={this.state.isModalVisible}
+          animationInTiming={1000}
+          animationOutTiming={1000}
+          backdropTransitionInTiming={800}
+          backdropTransitionOutTiming={800}>
+          <View
+            style={{
+              flex: 0.5,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <ScrollView
+              contentContainerStyle={
+                this.state.item.image === null && this.state.item.sound === null
+                  ? { justifyContent: 'center', flex: 1 }
+                  : {
+                      justifyContent: 'center',
+                    }
+              }
+              style={{ flex: 1, width: width * 0.9, backgroundColor: 'white' }}>
+              <View
+                style={
+                  this.state.item.image === null &&
+                  this.state.item.sound === null
+                    ? {
+                        alignSelf: 'center',
+                        width: width * 0.8,
+                        justifyContent: 'center',
+                      }
+                    : {
+                        alignSelf: 'center',
+                        width: width * 0.8,
+                        justifyContent: 'center',
+                        marginBottom: 20,
+                        marginTop: 20,
+                      }
+                }>
+                <Text style={{ fontSize: 20 }}>Thông tin tín hiệu</Text>
+                <Text style={{ fontSize: 15, marginTop: 10 }}>
+                  Người gửi: {this.state.item.user.name}
+                </Text>
+                <Text style={{ fontSize: 15, marginTop: 10 }}>
+                  Liên hệ: {this.state.item.user.id}
+                </Text>
+                <Text style={{ fontSize: 15, marginTop: 10 }}>
+                  Địa chỉ: {this.state.address}
+                </Text>
+                <Text style={{ fontSize: 15, marginTop: 10 }}>
+                  Tin nhắn: {this.state.item.message}
+                </Text>
+                {this.state.item.image === null ? null : (
+                  <Image
+                    style={styles.avatar}
+                    source={{ uri: this.state.item.image }}
+                    resizeMode="contain"
+                  />
+                )}
+
+                {this.state.item.sound && (
+                  <TouchableOpacity
+                    style={{
+                      marginTop: 10,
+                      width: 150,
+                      height: 70,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: Colors.appColor,
+                      borderRadius: 25,
+                    }}
+                    onPress={() => {
+                      console.log(
+                        JSON.stringify(this.state.item.sound) + ' props ne',
+                      );
+
+                      this.setState({
+                        playAudio: true,
+                      });
+
+                      const sound = new Sound(
+                        this.state.item.sound,
+                        '',
+                        error => {
+                          if (error) {
+                            console.log('failed to load the sound', error);
+                          }
+                          sound.play(success => {
+                            this.setState({ playAudio: false });
+
+                            console.log(success, 'success play');
+                            if (!success) {
+                              Alert.alert(
+                                'There was an error playing this audio',
+                              );
+                            }
+                          });
+                        },
+                      );
+                    }}>
+                    <Ionicons
+                      name="ios-play"
+                      size={50}
+                      color={this.state.playAudio ? 'red' : 'white'}
+                    />
+                  </TouchableOpacity>
+                )}
+                <View
+                  style={{
+                    alignSelf: 'center',
+                    flexDirection: 'row',
+                    justifyContent: 'space-evenly',
+                    width: width * 0.8,
+                    alignItems: 'center',
+                    marginTop: 30,
+                  }}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      Linking.openURL(`tel:${this.state.item.user.id}`)
+                    }
+                    style={styles.callButton}>
+                    <Text style={styles.buttonText}>Gọi người gửi</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={this._toggleModal}
+                    style={styles.ignoreButton}>
+                    <Text style={styles.buttonText}>Đóng</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+        </Modal>
         <MapView
           style={styles.map}
           showUserLocation
@@ -136,20 +280,26 @@ export class SOSDetailScreen extends Component {
                 this.marker = marker;
               }}
               coordinate={{ longitude, latitude }}>
-              <Callout tooltip>
-                <CustomCallout>
-                  <Text style={{ fontSize: 18 }}>Thông tin tín hiệu</Text>
-                  <Text>Người gửi: {this.state.item.user.name}</Text>
-                  <Text>Vị trí: {this.state.address}</Text>
-                  <Text>Liên hệ: {this.state.item.user.id}</Text>
-                </CustomCallout>
+              <Callout onPress={this._toggleModal}>
+                <Text style={{ fontSize: 18 }}>Thông tin tín hiệu</Text>
+                <Text>Người gửi: {this.state.item.user.name}</Text>
+                <Text>Liên hệ: {this.state.item.user.id}</Text>
+                <Text
+                  style={{
+                    color: Colors.appColor,
+                    textDecorationLine: 'underline',
+                    alignSelf: 'center',
+                  }}>
+                  Xem Thêm
+                </Text>
               </Callout>
             </Marker>
           )}
         </MapView>
         {(this.state.item.status !== MESSAGES.CASE.SUCCESSED ||
           this.state.item.status !== MESSAGES.CASE.FAILED) &&
-        this.state.item.inCase === false ? (
+        this.state.item.inCase === false &&
+        this.state.item.citizenId !== this.state.phoneNumber ? (
           <View style={styles.viewButton}>
             <TouchableOpacity onPress={this.joinCase} style={styles.joinButton}>
               <Text style={styles.buttonText}>Tham Gia</Text>

@@ -42,6 +42,8 @@ export const CONFIRM_CASE_API = BASE_URL + 'confirmCase';
 
 export const CLOSE_CASE_API = BASE_URL + 'closeCase';
 
+export const LEAVE_CASE_API = BASE_URL + 'leaveCase';
+
 export const GET_POLICECONTACT = BASE_URL + 'getPoliceContact';
 
 export const GET_NEWS = BASE_URL + 'getNews';
@@ -49,3 +51,5 @@ export const GET_NEWS = BASE_URL + 'getNews';
 export const REMOVE_TOKEN_API = BASE_URL + 'removeToken';
 
 export const GET_LIST_TEAM_API = BASE_URL + 'getTeam';
+
+export const SEND_FEEDBACK_API = BASE_URL + 'sendFeedback';

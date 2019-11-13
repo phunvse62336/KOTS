@@ -1,10 +1,10 @@
 import { GET_LIST_TEAM_API } from '../Utils/Constants';
 import axios from 'axios';
 
-export const APIGetListTeam = async () => {
+export const APIGetListTeam = async teamId => {
   try {
     let response = await axios
-      .get(GET_LIST_TEAM_API)
+      .post(GET_LIST_TEAM_API, { teamId: teamId })
       .then(res => {
         console.log(res);
         return res.data;
