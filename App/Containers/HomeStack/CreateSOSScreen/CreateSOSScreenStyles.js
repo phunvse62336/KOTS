@@ -19,6 +19,7 @@ export default StyleSheet.create({
     width: width * 0.8,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 20,
   },
   viewMedia: {
     flex: 0.2,

@@ -56,7 +56,10 @@ export default class Member extends Component {
           <FontAwesome name="user" size={70} color="white" />
         </View>
         <View style={styles.viewTextContainer}>
-          <Text style={styles.textName}>{item.name}</Text>
+          <Text style={styles.textName}>
+            {item.name}
+            {this.props.phone === item.id ? ' (Tôi)' : null}
+          </Text>
           <View style={styles.viewText}>
             <Text style={{ fontWeight: 'bold' }}>Điện thoại: </Text>
             <Text>{item.id}</Text>

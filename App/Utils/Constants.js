@@ -53,3 +53,11 @@ export const REMOVE_TOKEN_API = BASE_URL + 'removeToken';
 export const GET_LIST_TEAM_API = BASE_URL + 'getTeam';
 
 export const SEND_FEEDBACK_API = BASE_URL + 'sendFeedback';
+
+export const GET_LIST_WAITING_KNIGHT = BASE_URL + 'getWaitingKnight';
+
+export const APPROVE_KNIGHT = BASE_URL + 'approvedKnight';
+
+export const IGNORE_KNIGHT = BASE_URL + 'ignoreKnight';
+
+export const REQUEST_LEAVE_KNIGHT = BASE_URL + 'requestLeaveTeam';

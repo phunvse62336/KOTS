@@ -2,6 +2,8 @@ import { Platform } from 'react-native';
 import firebase from 'react-native-firebase';
 import GeoFire from 'geofire';
 import RNFetchBlob from 'rn-fetch-blob';
+import moment from 'moment';
+
 const Blob = RNFetchBlob.polyfill.Blob;
 const fs = RNFetchBlob.fs;
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
@@ -67,14 +69,12 @@ class FirebaseService {
   sendLocation(location, user) {
     this.locationRef = firebase.database().ref(this.myID);
     //console.log(new Date(firebase.database.ServerValue.TIMESTAMP));
-    var today = new Date();
     /* today.setDate(today.getDate() - 30);
     var timestamp = new Date(today).toISOString(); */
-    var timestamp = today.toISOString();
     this.locationRef.push({
       longitude: location.longitude,
       latitude: location.latitude,
-      createdAt: timestamp,
+      createdAt: moment().format(),
       user: user,
     });
   }
@@ -95,7 +95,7 @@ class FirebaseService {
         _id: data.key,
         text: message.text,
         //createdAt: new Date(message.createdAt),
-        createdAt: message.createdAt,
+        createdAt: moment().format(),
         user: {
           _id: message.user._id,
           name: message.user.name,
@@ -127,7 +127,7 @@ class FirebaseService {
       this.messagesRef.push({
         text: message[i].text,
         user: message[i].user,
-        createdAt: timestamp,
+        createdAt: moment().format(),
       });
     }
   }
@@ -141,7 +141,7 @@ class FirebaseService {
     this.messagesRef.push({
       text: message.text,
       user: message.user,
-      createdAt: timestamp,
+      createdAt: moment().format(),
       messageType: message.messageType,
       audio: message.audio,
     });
@@ -156,7 +156,7 @@ class FirebaseService {
     this.messagesRef.push({
       text: message.text,
       user: message.user,
-      createdAt: timestamp,
+      createdAt: moment().format(),
       messageType: message.messageType,
       image: message.image,
     });

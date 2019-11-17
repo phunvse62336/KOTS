@@ -354,18 +354,22 @@ export class SOSScreen extends Component {
                 {this.state.filterName}: ({this.state.renderCase.length})
               </Text>
             </TouchableOpacity>
-            <FlatList
-              data={this.state.renderCase}
-              extraData={this.state}
-              showsVerticalScrollIndicator={false}
-              renderItem={this._renderItem}
-              refreshControl={
-                <RefreshControl
-                  refreshing={this.state.isRefreshing}
-                  onRefresh={this.onRefresh.bind(this)}
-                />
-              }
-            />
+            {this.state.case.length === 0 ? (
+              <Text>Bạn chưa tham gia sự cố nào</Text>
+            ) : (
+              <FlatList
+                data={this.state.renderCase}
+                extraData={this.state}
+                showsVerticalScrollIndicator={false}
+                renderItem={this._renderItem}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={this.state.isRefreshing}
+                    onRefresh={this.onRefresh.bind(this)}
+                  />
+                }
+              />
+            )}
           </ScrollView>
         )}
       </View>

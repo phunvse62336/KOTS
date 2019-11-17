@@ -366,9 +366,9 @@ export default class CreateSOSScreen extends Component {
           hideOnPress={true}>
           Gửi Thành Công
         </Toast>
-        <View style={styles.viewCase}>
-          <Text style={styles.pickerText}>Trường Hợp</Text>
-          {/* <View style={styles.viewPicker}>
+        {/* <View style={styles.viewCase}>
+          <Text style={styles.pickerText}>Trường Hợp</Text> */}
+        {/* <View style={styles.viewPicker}>
             <Picker
               selectedValue={this.state.language}
               style={styles.casePicker}
@@ -379,7 +379,7 @@ export default class CreateSOSScreen extends Component {
               <Picker.Item label="JavaScript" value="js" />
             </Picker>
           </View> */}
-        </View>
+        {/* </View> */}
         <View style={styles.viewMessage}>
           <View style={styles.inputViewContainer}>
             <View style={styles.inputViewLabel}>

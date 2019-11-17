@@ -132,7 +132,7 @@ export class JoinTeamScreen extends Component {
     super(props);
     this.state = {
       listTeam: [],
-      spinner: false,
+      spinner: true,
       phoneNumber: '',
       token: '',
     };
@@ -146,7 +146,6 @@ export class JoinTeamScreen extends Component {
     let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
     let fcmToken = await AsyncStorage.getItem('fcmToken');
 
-    this.setState({ spinner: true });
     let responseStatus = await APIGetListTeam(null);
     if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
       this.setState({
@@ -189,25 +188,42 @@ export class JoinTeamScreen extends Component {
           textStyle={{ color: '#fff' }}
           size="large"
         />
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: Colors.appColor,
-            marginTop: 20,
-          }}>
-          {' '}
-          Vui lòng chọn một đội để tham gia{' '}
-        </Text>
 
-        <View style={{ marginTop: 20, marginBottom: 50 }}>
-          <FlatList
-            data={this.state.listTeam}
-            renderItem={this._renderItem}
-            extraData={this.state}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
+        {this.state.spinner === true ? null : (
+          <View style={{ marginTop: 20, marginBottom: 50 }}>
+            {this.state.listTeam.length === 0 ? (
+              <Text style={{ textAlign: 'center' }}>
+                Chưa có đội nào được đăng ký.{'\n'}Vui lòng liên hệ với quản trị
+                để đăng ký
+              </Text>
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  width,
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    color: Colors.appColor,
+                    marginTop: 20,
+                    marginBottom: 20,
+                  }}>
+                  {' '}
+                  Vui lòng chọn một đội để tham gia{' '}
+                </Text>
+                <FlatList
+                  data={this.state.listTeam}
+                  renderItem={this._renderItem}
+                  extraData={this.state}
+                  showsVerticalScrollIndicator={false}
+                />
+              </View>
+            )}
+          </View>
+        )}
       </View>
     );
   }

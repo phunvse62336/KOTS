@@ -36,7 +36,7 @@ export class Team extends Component {
       await AsyncStorage.setItem('PHONENUMBER', this.props.phoneNumber);
       await AsyncStorage.setItem('USER', JSON.stringify(responseStatus.data));
       this.props.spinnerLoading();
-      this.props.navigation.navigate('AppNavigator');
+      this.props.navigation.navigate('AuthNavigator');
     } else {
       this.props.spinnerLoading();
       alert('Có lỗi. Xin vui lòng gửi lại sau!');
@@ -46,7 +46,7 @@ export class Team extends Component {
   joinTeam = async () => {
     Alert.alert(
       'Tham gia đội',
-      'Vui lòng xác nhận bạn muốn tham gia đôin này!',
+      'Vui lòng xác nhận bạn muốn tham gia đội này!',
       [
         {
           text: 'Hủy',

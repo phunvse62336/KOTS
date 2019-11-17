@@ -11,6 +11,7 @@ import ConfirmScreen from '../Containers/AuthStack/ConfirmScreen/ConfirmScreen';
 import RegisterScreen from '../Containers/AuthStack/RegisterScreen/RegisterScreen';
 import CreateProfileScreen from '../Containers/AuthStack/CreateProfileScreen/CreateProfileScreen';
 import JoinTeamScreen from '../Containers/AuthStack/JoinTeamScreen/JoinTeamScreen';
+import WaitingScreen from '../Containers/AuthStack/WaitingScreen/WaitingScreen';
 
 import HomeScreen from '../Containers/HomeStack/HomeScreen/HomeScreen';
 import CreateSOSScreen from '../Containers/HomeStack/CreateSOSScreen/CreateSOSScreen';
@@ -29,6 +30,8 @@ import FeedBackScreen from '../Containers/MenuStack/FeedBackScreen/FeedBackScree
 import UpdateProfileScreen from '../Containers/MenuStack/UpdateProfileScreen/UpdateProfileScreen';
 
 import GroupScreen from '../Containers/GroupStack/GroupScreen/GroupScreen';
+import RequestScreen from '../Containers/GroupStack/RequestScreen/RequestScreen';
+import MesssageGroupScreen from '../Containers/GroupStack/MesssageGroupScreen/MesssageGroupScreen';
 
 import styles from './Styles/NavigationStyles';
 import { Colors } from '../Themes';
@@ -51,6 +54,12 @@ const AuthNavigator = createStackNavigator(
     },
     RegisterScreen: {
       screen: RegisterScreen,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    WaitingScreen: {
+      screen: WaitingScreen,
       navigationOptions: {
         header: null,
       },
@@ -81,7 +90,7 @@ const CreateProfile = createStackNavigator({
 });
 
 const JoinTeam = createStackNavigator({
-  JoinTeamScreen: {
+  JoinTeamScreen2: {
     screen: JoinTeamScreen,
     navigationOptions: {
       header: null,
@@ -159,6 +168,22 @@ const GroupTabStack = createStackNavigator({
     screen: GroupScreen,
     navigationOptions: {
       header: null,
+    },
+  },
+  RequestScreen: {
+    screen: RequestScreen,
+    navigationOptions: {
+      headerTitle: 'Yêu Cầu',
+      headerTintColor: Colors.appColor,
+      headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
+    },
+  },
+  MesssageGroupScreen: {
+    screen: MesssageGroupScreen,
+    navigationOptions: {
+      headerTitle: 'Tin nhắn',
+      headerTintColor: Colors.appColor,
+      headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
     },
   },
 });

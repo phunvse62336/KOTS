@@ -134,7 +134,7 @@ export class HomeScreen extends Component {
         } else {
           coordinate.timing(newCoordinate).start();
         }
-        // FirebaseService.sendLocation(newCoordinate, this.state.user);
+        FirebaseService.sendLocation(newCoordinate, this.state.user);
 
         this.setState({
           latitude,
@@ -144,7 +144,6 @@ export class HomeScreen extends Component {
       error => console.log(error),
       {
         enableHighAccuracy: true,
-        timeout: 20000,
         maximumAge: 1000,
         distanceFilter: 30,
         interval: 30000,

@@ -76,6 +76,23 @@ export class SignInScreen extends Component {
               this.setState({ loading: false });
               alert(error);
             });
+        } else if (responseStatus.data.status === 0) {
+          firebase
+            .auth()
+            .signInWithPhoneNumber(phoneNumber)
+            .then(confirmResult => {
+              this.setState({ loading: false });
+              this.props.navigation.navigate('ConfirmScreen', {
+                phoneNumber: this.state.phoneNumber,
+                action: 'waiting',
+                confirmResult: confirmResult,
+                user: responseStatus.data,
+              });
+            })
+            .catch(error => {
+              this.setState({ loading: false });
+              alert(error);
+            });
         } else {
           firebase
             .auth()

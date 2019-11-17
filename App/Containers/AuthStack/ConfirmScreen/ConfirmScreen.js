@@ -66,6 +66,11 @@ export class SignInScreen extends Component {
     } else if (this.state.action === 'joinTeam') {
       AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
       this.props.navigation.navigate('JoinTeam');
+    } else if (this.state.action === 'waiting') {
+      AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
+      this.props.navigation.navigate('WaitingScreen', {
+        teamId: this.state.user.team_id,
+      });
     }
   };
 

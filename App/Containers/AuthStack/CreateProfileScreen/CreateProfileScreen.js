@@ -138,7 +138,6 @@ export class CreateProfileScreen extends Component {
           </View>
           <TextInput
             style={styles.inputView}
-            keyboardType="email-address"
             onChangeText={this.onChangeTextName}
           />
         </View>
@@ -148,7 +147,6 @@ export class CreateProfileScreen extends Component {
           </View>
           <TextInput
             style={styles.inputView}
-            keyboardType="email-address"
             onChangeText={this.onChangeTextAddress}
           />
         </View>
