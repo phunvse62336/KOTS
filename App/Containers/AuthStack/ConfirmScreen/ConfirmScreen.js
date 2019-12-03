@@ -47,6 +47,8 @@ export class SignInScreen extends Component {
       console.log('ABC ' + JSON.stringify(responseStatus));
       if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
         console.log('vo ne');
+        this.setState({ loading: false });
+
         await AsyncStorage.setItem('LOGIN', '1');
         await AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
         await AsyncStorage.setItem('USER', user);
@@ -57,19 +59,28 @@ export class SignInScreen extends Component {
       // alert(token);
       let responseStatus = await APICreateKnightProfile(phoneNumber, token);
       if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
+        this.setState({ loading: false });
+
         AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
         this.props.navigation.navigate('CreateProfile');
       }
     } else if (this.state.action === 'updateProfile') {
+      this.setState({ loading: false });
+
       AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
       this.props.navigation.navigate('CreateProfile');
     } else if (this.state.action === 'joinTeam') {
+      this.setState({ loading: false });
+
       AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
-      this.props.navigation.navigate('JoinTeam');
+      this.props.navigation.navigate('JoinOrCreate');
     } else if (this.state.action === 'waiting') {
+      this.setState({ loading: false });
+
       AsyncStorage.setItem('PHONENUMBER', this.state.phoneNumber);
       this.props.navigation.navigate('WaitingScreen', {
         teamId: this.state.user.team_id,
+        isLeader: this.state.user.isLeader,
       });
     }
   };
@@ -82,7 +93,6 @@ export class SignInScreen extends Component {
       confirmResult
         .confirm(code)
         .then(async user => {
-          this.setState({ loading: false });
           // await AsyncStorage.setItem('FIREBASE_USER', user);
 
           this.confirm();

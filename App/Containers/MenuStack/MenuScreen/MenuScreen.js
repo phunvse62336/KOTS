@@ -84,8 +84,8 @@ export class MenuScreen extends Component {
                     onGoBack: this.refresh,
                   })
                 }>
-                <Icon name="user-plus" size={30} style={styles.iconStyle} />
-                <Text style={styles.textTouch}>Sửa đổi profile</Text>
+                <Icon name="user" size={30} style={styles.iconStyle} />
+                <Text style={styles.textTouch}>Xem thông tin chi tiết</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.viewTouch} onPress={this.logout}>
                 <Icon name="sign-out" size={30} style={styles.iconStyle} />

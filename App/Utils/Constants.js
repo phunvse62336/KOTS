@@ -61,3 +61,5 @@ export const APPROVE_KNIGHT = BASE_URL + 'approvedKnight';
 export const IGNORE_KNIGHT = BASE_URL + 'ignoreKnight';
 
 export const REQUEST_LEAVE_KNIGHT = BASE_URL + 'requestLeaveTeam';
+
+export const CREATE_TEAM = BASE_URL + 'createTeam';

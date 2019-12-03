@@ -21,6 +21,7 @@ export const APISendSOS = async (
         type: type,
         image: image === null ? null : image,
         sound: sound === null ? null : sound,
+        radius: 5,
       })
       .then(res => {
         console.log(res);

@@ -104,7 +104,7 @@ export default class HeaderUI extends Component {
             )}
             <TouchableOpacity
               onPress={() =>
-                this.props.navigation.navigate('MesssageGroupScreen')
+                this.props.navigation.navigate('GroupMessageScreen')
               }>
               <Feather
                 name="message-circle"

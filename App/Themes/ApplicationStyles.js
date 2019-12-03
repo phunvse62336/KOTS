@@ -1,4 +1,4 @@
-import {Dimensions, Platform} from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 
 import Fonts from './Fonts';
 import Metrics from './Metrics';
@@ -6,10 +6,10 @@ import Colors from './Colors';
 
 // This file is for a reusable grouping of Theme items.
 // Similar to an XML fragment layout in Android
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const ApplicationStyles = {
-  flexOne: {flex: 1},
+  flexOne: { flex: 1 },
   headerView: {
     height: 56,
     width: '100%',
@@ -19,6 +19,7 @@ const ApplicationStyles = {
     paddingRight: 15,
     elevation: 2,
     backgroundColor: 'white',
+    flexDirection: 'row',
   },
   buttonCaseView: {
     width: width * 0.9,
@@ -31,25 +32,25 @@ const ApplicationStyles = {
     marginTop: 10,
     flexDirection: 'row',
   },
-  imageCaseView: {width: 90, height: 90, marginLeft: 5},
+  imageCaseView: { width: 90, height: 90, marginLeft: 5 },
   inforCaseView: {
     marginLeft: 5,
     width: width * 0.4,
     height: 90,
   },
-  doneTextCaseView: {fontSize: 17, color: 'gray'},
-  SOSTextCaseView: {fontSize: 17, color: 'red'},
-  normalCaseTextCaseView: {fontSize: 17, color: Colors.appColor},
-  timeCaseView: {fontSize: 10, marginTop: 5, color: 'gray'},
-  nameCaseView: {fontSize: 11, marginTop: 5},
-  phoneCaseView: {fontSize: 11},
+  doneTextCaseView: { fontSize: 17, color: 'gray' },
+  SOSTextCaseView: { fontSize: 17, color: 'red' },
+  normalCaseTextCaseView: { fontSize: 17, color: Colors.appColor },
+  timeCaseView: { fontSize: 10, marginTop: 5, color: 'gray' },
+  nameCaseView: { fontSize: 11, marginTop: 5 },
+  phoneCaseView: { fontSize: 11 },
   buttonViewCaseView: {
     alignItems: 'center',
     height: 90,
     justifyContent: 'space-around',
   },
-  doneStatusCaseView: {fontSize: 13, color: 'gray'},
-  statusCaseView: {fontSize: 13},
+  doneStatusCaseView: { fontSize: 13, color: 'gray' },
+  statusCaseView: { fontSize: 13 },
   callButtonCaseView: {
     width: 70,
     height: 50,
@@ -90,7 +91,7 @@ const ApplicationStyles = {
     alignSelf: 'center',
     marginTop: -0.5,
   },
-  headerText: {color: Colors.appColor, fontWeight: 'bold', fontSize: 20},
+  headerText: { color: Colors.appColor, fontWeight: 'bold', fontSize: 20 },
 };
 
 export default ApplicationStyles;

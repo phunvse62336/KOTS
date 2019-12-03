@@ -31,20 +31,13 @@ import { APIFindKnight } from '../../../Services/APIFindKnight';
 import FirebaseService from '../../../Services/FirebaseService';
 import messages from './messages';
 
-export class SOSMessageScreen extends Component {
+export class GroupMessageScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      headerTitle: 'Sự cố #321',
+      headerTitle: 'Tin nhắn nhóm',
       headerTintColor: Colors.appColor,
       headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
-      headerRight: (
-        <HeaderMenu
-          item={navigation.getParam('item', 'abc')}
-          phoneNumber={params ? navigation.state.params.phoneNumber : 'abc'}
-          navigation={navigation}
-        />
-      ),
     };
   };
 
@@ -57,8 +50,7 @@ export class SOSMessageScreen extends Component {
       loadEarlier: true,
       typingText: null,
       isLoadingEarlier: false,
-      item: this.props.navigation.state.params.item,
-      phoneNumber: this.props.navigation.state.params.phoneNumber,
+      phoneNumber: '',
       latitude: '',
       longitude: '',
       user: {},
@@ -84,9 +76,9 @@ export class SOSMessageScreen extends Component {
     this.watchLocation();
     let user = await AsyncStorage.getItem('USER');
     let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
-    this.setState({ user: JSON.parse(user) });
+    this.setState({ user: JSON.parse(user), phoneNumber: phoneNumber });
     FirebaseService.setConversationID(
-      'knight/messageID/case/' + this.state.item.id.toString(),
+      'knight/messageID/group/' + JSON.parse(user).team_id,
     );
     FirebaseService.loadMessages(message => {
       this.setState(previousState => {
@@ -478,4 +470,4 @@ export class SOSMessageScreen extends Component {
   }
 }
 
-export default SOSMessageScreen;
+export default GroupMessageScreen;

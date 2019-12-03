@@ -12,6 +12,8 @@ import RegisterScreen from '../Containers/AuthStack/RegisterScreen/RegisterScree
 import CreateProfileScreen from '../Containers/AuthStack/CreateProfileScreen/CreateProfileScreen';
 import JoinTeamScreen from '../Containers/AuthStack/JoinTeamScreen/JoinTeamScreen';
 import WaitingScreen from '../Containers/AuthStack/WaitingScreen/WaitingScreen';
+import CreateTeamScreen from '../Containers/AuthStack/CreateTeamScreen/CreateTeamScreen';
+import JoinOrCreateScreen from '../Containers/AuthStack/JoinOrCreateScreen/JoinOrCreateScreen';
 
 import HomeScreen from '../Containers/HomeStack/HomeScreen/HomeScreen';
 import CreateSOSScreen from '../Containers/HomeStack/CreateSOSScreen/CreateSOSScreen';
@@ -31,7 +33,7 @@ import UpdateProfileScreen from '../Containers/MenuStack/UpdateProfileScreen/Upd
 
 import GroupScreen from '../Containers/GroupStack/GroupScreen/GroupScreen';
 import RequestScreen from '../Containers/GroupStack/RequestScreen/RequestScreen';
-import MesssageGroupScreen from '../Containers/GroupStack/MesssageGroupScreen/MesssageGroupScreen';
+import GroupMessageScreen from '../Containers/GroupStack/GroupMessageScreen/GroupMessageScreen';
 
 import styles from './Styles/NavigationStyles';
 import { Colors } from '../Themes';
@@ -81,17 +83,23 @@ const CreateProfile = createStackNavigator({
       header: null,
     },
   },
+});
+
+const JoinOrCreate = createStackNavigator({
+  JoinOrCreateScreen2: {
+    screen: JoinOrCreateScreen,
+    navigationOptions: {
+      header: null,
+    },
+  },
   JoinTeamScreen: {
     screen: JoinTeamScreen,
     navigationOptions: {
       header: null,
     },
   },
-});
-
-const JoinTeam = createStackNavigator({
-  JoinTeamScreen2: {
-    screen: JoinTeamScreen,
+  CreateTeamScreen: {
+    screen: CreateTeamScreen,
     navigationOptions: {
       header: null,
     },
@@ -178,8 +186,8 @@ const GroupTabStack = createStackNavigator({
       headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
     },
   },
-  MesssageGroupScreen: {
-    screen: MesssageGroupScreen,
+  GroupMessageScreen: {
+    screen: GroupMessageScreen,
     navigationOptions: {
       headerTitle: 'Tin nhắn',
       headerTintColor: Colors.appColor,
@@ -264,13 +272,13 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
 const SwitchNavigation = createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
-    JoinTeam,
     AuthNavigator,
     CreateProfile,
     AppNavigator,
+    JoinOrCreate,
   },
   {
-    initialRouteName: 'AuthLoading',
+    initialRouteName: 'AuthNavigator',
   },
 );
 

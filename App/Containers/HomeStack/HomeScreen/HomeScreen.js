@@ -71,9 +71,9 @@ export class HomeScreen extends Component {
     let user = await AsyncStorage.getItem('USER');
     this.setState({ phoneNumber: phoneNumber, user: JSON.parse(user) });
     FirebaseService.setMyID(
-      'teamID/' + this.state.user.team_id + '/' + phoneNumber,
+      'knight/teamID/' + this.state.user.team_id + '/' + phoneNumber,
     );
-    FirebaseService.setTeamID('teamID/' + this.state.user.team_id);
+    FirebaseService.setTeamID('knight/teamID/' + this.state.user.team_id);
     FirebaseService.trackingLocation(location => {
       let data = location.message !== null ? location.message : null;
       let listLocation = [];
