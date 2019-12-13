@@ -19,7 +19,6 @@ import Geolocation from 'react-native-geolocation-service';
 import { FloatingAction } from 'react-native-floating-action';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Toast from 'react-native-root-toast';
-import io from 'socket.io-client/dist/socket.io';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import { APISendSOS } from '../../../Services/APISendSOS';
@@ -38,13 +37,11 @@ const LONGITUDE = 106.650416;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const socketURL = 'http://localhost:4333';
 console.ignoredYellowBox = ['Setting a timer'];
 
 export class HomeScreen extends Component {
   constructor(props) {
     super(props);
-    this.socket = io(socketURL);
 
     this.state = {
       phoneNumber: '',
@@ -134,7 +131,7 @@ export class HomeScreen extends Component {
         } else {
           coordinate.timing(newCoordinate).start();
         }
-        FirebaseService.sendLocation(newCoordinate, this.state.user);
+        // FirebaseService.sendLocation(newCoordinate, this.state.user);
 
         this.setState({
           latitude,

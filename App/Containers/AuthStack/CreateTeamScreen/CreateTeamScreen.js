@@ -62,7 +62,7 @@ class CreateTeamScreen extends Component {
         <HeaderUI title="Tạo đội mới" />
         <View style={styles.inputViewContainer}>
           <View style={styles.inputViewLabel}>
-            <Text style={styles.colorText}>Họ Tên</Text>
+            <Text style={styles.colorText}>Tên Đội</Text>
           </View>
           <TextInput
             style={styles.inputView}

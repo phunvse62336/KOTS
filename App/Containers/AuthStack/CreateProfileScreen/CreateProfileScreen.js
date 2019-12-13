@@ -9,17 +9,20 @@ import {
   Picker,
   ScrollView,
   Image,
+  Platform,
 } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import moment from 'moment';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import ImagePicker from 'react-native-image-picker';
 
 import { HeaderUI, Button } from '../../../Components';
 import styles from './CreateProfileScreenStyles';
 import { Colors } from '../../../Themes';
 import { APIUpdateKnightProfile } from '../../../Services/APIUpdateKnightProfile';
+import FirebaseService from '../../../Services/FirebaseService';
 
 import { MESSAGES } from '../../../Utils/Constants';
 
@@ -38,6 +41,12 @@ export class CreateProfileScreen extends Component {
       token: '',
       phoneNumber: '',
       spinner: false,
+      avatar: '',
+      frontID: '',
+      backID: '',
+      certification1: '',
+      certification2: '',
+      certification3: '',
     };
   }
 
@@ -76,10 +85,24 @@ export class CreateProfileScreen extends Component {
       address,
       phoneNumber,
       token,
+      avatar,
+      frontID,
+      backID,
+      certification1,
+      certification2,
+      certification3,
     } = this.state;
 
-    if (name !== '' || address !== '') {
+    if (
+      name !== '' &&
+      address !== '' &&
+      avatar !== '' &&
+      frontID !== '' &&
+      backID !== ''
+    ) {
       this.setState({ spinner: true });
+
+      console.log('API');
       let responseStatus = await APIUpdateKnightProfile(
         phoneNumber,
         name,
@@ -88,6 +111,12 @@ export class CreateProfileScreen extends Component {
         token,
         dateOfBirth,
         null,
+        avatar,
+        frontID,
+        backID,
+        certification1 === '' ? null : certification1,
+        certification2 === '' ? null : certification2,
+        certification3 === '' ? null : certification3,
       );
       if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
         console.log(JSON.stringify(responseStatus));
@@ -122,7 +151,7 @@ export class CreateProfileScreen extends Component {
     });
   }
 
-  renderAddBlock = () => (
+  renderAddBlock = addFunc => (
     <TouchableOpacity
       style={{
         width: width / 4,
@@ -135,12 +164,294 @@ export class CreateProfileScreen extends Component {
         borderStyle: 'dashed',
         marginTop: 10,
       }}
-      onPress={this.props.onAdd}>
+      onPress={addFunc}>
       <FontAwesome name="plus" size={24} color={Colors.appColor} />
     </TouchableOpacity>
   );
 
-  renderImageBlock = url => (
+  selectAvatarTapped = () => {
+    const options = {
+      quality: 1.0,
+      maxWidth: 500,
+      maxHeight: 500,
+      storageOptions: {
+        skipBackup: true,
+      },
+    };
+
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled photo picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        var path = '';
+        if (Platform.OS === 'ios') {
+          path = response.uri.toString();
+        } else {
+          path = response.path.toString();
+        }
+        const image = {
+          image: response.uri.toString(),
+          path: path,
+          fileName: response.fileName,
+        };
+        FirebaseService.uploadImage(image)
+          .then(url => {
+            // alert('uploaded');
+            this.setState({ avatar: url });
+          })
+          .catch(error => console.log(error));
+      }
+    });
+  };
+
+  removeAvatar = () => {
+    this.setState({ avatar: '' });
+  };
+
+  selectFrontIDTapped = () => {
+    const options = {
+      quality: 1.0,
+      maxWidth: 500,
+      maxHeight: 500,
+      storageOptions: {
+        skipBackup: true,
+      },
+    };
+
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled photo picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        var path = '';
+        if (Platform.OS === 'ios') {
+          path = response.uri.toString();
+        } else {
+          path = response.path.toString();
+        }
+        const image = {
+          image: response.uri.toString(),
+          path: path,
+          fileName: response.fileName,
+        };
+        FirebaseService.uploadImage(image)
+          .then(url => {
+            // alert('uploaded');
+            this.setState({ frontID: url });
+          })
+          .catch(error => console.log(error));
+      }
+    });
+  };
+
+  removeFrontID = () => {
+    this.setState({ frontID: '' });
+  };
+
+  selectBackIDTapped = () => {
+    const options = {
+      quality: 1.0,
+      maxWidth: 500,
+      maxHeight: 500,
+      storageOptions: {
+        skipBackup: true,
+      },
+    };
+
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled photo picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        var path = '';
+        if (Platform.OS === 'ios') {
+          path = response.uri.toString();
+        } else {
+          path = response.path.toString();
+        }
+        const image = {
+          image: response.uri.toString(),
+          path: path,
+          fileName: response.fileName,
+        };
+        FirebaseService.uploadImage(image)
+          .then(url => {
+            // alert('uploaded');
+            this.setState({ backID: url });
+          })
+          .catch(error => console.log(error));
+      }
+    });
+  };
+
+  removeBackID = () => {
+    this.setState({ backID: '' });
+  };
+
+  selectCerti1Tapped = () => {
+    const options = {
+      quality: 1.0,
+      maxWidth: 500,
+      maxHeight: 500,
+      storageOptions: {
+        skipBackup: true,
+      },
+    };
+
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled photo picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        var path = '';
+        if (Platform.OS === 'ios') {
+          path = response.uri.toString();
+        } else {
+          path = response.path.toString();
+        }
+        const image = {
+          image: response.uri.toString(),
+          path: path,
+          fileName: response.fileName,
+        };
+        FirebaseService.uploadImage(image)
+          .then(url => {
+            // alert('uploaded');
+            this.setState({ certification1: url });
+          })
+          .catch(error => console.log(error));
+      }
+    });
+  };
+
+  removeCerti1 = () => {
+    this.setState({ certification1: '' });
+  };
+
+  selectCerti2Tapped = () => {
+    const options = {
+      quality: 1.0,
+      maxWidth: 500,
+      maxHeight: 500,
+      storageOptions: {
+        skipBackup: true,
+      },
+    };
+
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled photo picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        var path = '';
+        if (Platform.OS === 'ios') {
+          path = response.uri.toString();
+        } else {
+          path = response.path.toString();
+        }
+        const image = {
+          image: response.uri.toString(),
+          path: path,
+          fileName: response.fileName,
+        };
+        FirebaseService.uploadImage(image)
+          .then(url => {
+            // alert('uploaded');
+            this.setState({ certification2: url });
+          })
+          .catch(error => console.log(error));
+      }
+    });
+  };
+
+  removeCerti2 = () => {
+    this.setState({ certification2: '' });
+  };
+
+  selectCerti3Tapped = () => {
+    const options = {
+      quality: 1.0,
+      maxWidth: 500,
+      maxHeight: 500,
+      storageOptions: {
+        skipBackup: true,
+      },
+    };
+
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled photo picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        var path = '';
+        if (Platform.OS === 'ios') {
+          path = response.uri.toString();
+        } else {
+          path = response.path.toString();
+        }
+        const image = {
+          image: response.uri.toString(),
+          path: path,
+          fileName: response.fileName,
+        };
+        FirebaseService.uploadImage(image)
+          .then(url => {
+            // alert('uploaded');
+            this.setState({ certification3: url });
+          })
+          .catch(error => console.log(error));
+      }
+    });
+  };
+
+  removeCerti3 = () => {
+    this.setState({ certification3: '' });
+  };
+
+  renderImageBlock = (url, removeFunc) => (
     <View style={{ marginTop: 10 }}>
       <Image
         resizeMode="cover"
@@ -159,17 +470,17 @@ export class CreateProfileScreen extends Component {
           right: 5,
           position: 'absolute',
         }}
-        onPress={this.props.onDelete}>
+        onPress={removeFunc}>
         <FontAwesome name="remove" size={21} color="white" />
       </TouchableOpacity>
     </View>
   );
 
-  renderImage = url => {
+  renderImage = (url, addFunc, removeFunc) => {
     if (url === '') {
-      return this.renderAddBlock();
+      return this.renderAddBlock(addFunc);
     }
-    return this.renderImageBlock(url);
+    return this.renderImageBlock(url, removeFunc);
   };
 
   render() {
@@ -241,26 +552,58 @@ export class CreateProfileScreen extends Component {
               Vui lòng cung cấp thêm một số hình ảnh để xác nhận
             </Text>
             <Text style={styles.colorText}>Ảnh khuôn mặt</Text>
-            {this.renderImage('')}
+            {this.renderImage(
+              this.state.avatar,
+              this.selectAvatarTapped,
+              this.removeAvatar,
+            )}
           </View>
           <View style={styles.buttonGroupContainer}>
             <Text style={styles.colorText}>Cung cấp chứng minh nhân dân</Text>
             <View style={{ flexDirection: 'row' }}>
               {this.renderImage(
-                'https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+                this.state.frontID,
+                this.selectFrontIDTapped,
+                this.removeFrontID,
               )}
               <View style={{ marginLeft: 10 }}>
                 {this.renderImage(
-                  'https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+                  this.state.backID,
+                  this.selectBackIDTapped,
+                  this.removeBackID,
                 )}
               </View>
             </View>
           </View>
           <View style={styles.buttonGroupContainer}>
-            <Text style={styles.colorText}>Chứng nhận</Text>
-            {this.renderImage(
-              'https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
-            )}
+            <Text style={styles.colorText}>
+              Chứng nhận (Không bắt buộc, tối đa 3 hình)
+            </Text>
+            <View style={{ flexDirection: 'row' }}>
+              {this.renderImage(
+                this.state.certification1,
+                this.selectCerti1Tapped,
+                this.removeCerti1,
+              )}
+              <View style={{ marginLeft: 10 }}>
+                {this.state.certification1 === ''
+                  ? null
+                  : this.renderImage(
+                      this.state.certification2,
+                      this.selectCerti2Tapped,
+                      this.removeCerti2,
+                    )}
+              </View>
+              <View style={{ marginLeft: 10 }}>
+                {this.state.certification2 === ''
+                  ? null
+                  : this.renderImage(
+                      this.state.certification3,
+                      this.selectCerti3Tapped,
+                      this.removeCerti3,
+                    )}
+              </View>
+            </View>
           </View>
 
           <Button

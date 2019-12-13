@@ -13,8 +13,7 @@ export default class HeaderUI extends Component {
     super(props);
     this.state = {
       group: false,
-      isLeader: false,
-      leaderId: this.props.leaderId || '',
+      isLeader: 0,
       phoneNumber: '',
       user: '',
     };
@@ -22,19 +21,15 @@ export default class HeaderUI extends Component {
 
   async componentDidMount() {
     let phoneNumber = await AsyncStorage.getItem('PHONENUMBER');
+    let login = await AsyncStorage.getItem('LOGIN');
+
     let user = await AsyncStorage.getItem('USER');
     let userJson = JSON.parse(user);
-
-    if (this.state.leaderId === phoneNumber) {
-      this.setState({
-        isLeader: true,
-        phoneNumber: phoneNumber,
-        user: userJson,
-      });
-    } else {
+    if (login === '1') {
       this.setState({
         phoneNumber: phoneNumber,
         user: userJson,
+        isLeader: userJson.isLeader,
       });
     }
   }
@@ -85,7 +80,7 @@ export default class HeaderUI extends Component {
               width: 100,
               justifyContent: 'flex-end',
             }}>
-            {this.state.isLeader === true ? (
+            {this.state.isLeader === 1 ? (
               <TouchableOpacity
                 style={{ marginRight: 10 }}
                 onPress={() =>

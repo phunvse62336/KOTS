@@ -104,6 +104,10 @@ export default class HeaderMenu extends React.Component<props> {
     }
   };
 
+  fakeCase = () => {
+    alert('Case giả');
+  };
+
   leaveCase = () => {
     const { phoneNumber, item } = this.state;
     console.log(phoneNumber + ' ' + 2 + ' ' + ' ' + item.id);
@@ -132,12 +136,6 @@ export default class HeaderMenu extends React.Component<props> {
       ],
       { cancelable: false },
     );
-  };
-
-  voiceCall = () => {
-    this._menu.hide();
-
-    this.props.navigation.navigate('SOSVoiceChatScreen');
   };
 
   closeCase = () => {
@@ -184,8 +182,10 @@ export default class HeaderMenu extends React.Component<props> {
             <Feather name="more-vertical" color={Colors.appColor} size={30} />
           </TouchableOpacity>
         }>
-        <MenuItem textStyle={{ color: '#000', fontSize: 16 }}>
-          Thông tin sự cố
+        <MenuItem
+          textStyle={{ color: '#000', fontSize: 16 }}
+          onPress={this.fakeCase}>
+          Sự cố giả
         </MenuItem>
         <MenuItem
           onPress={this.leaveCase}

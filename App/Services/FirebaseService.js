@@ -13,11 +13,14 @@ class FirebaseService {
   uid = '';
   messagesRef = null;
   locationRef = null;
-  myLocationRef = null;
   geofireLocation = null;
   teamID = '';
   myID = '';
+  caseId = '';
+  myInCase = '';
   conversationID = '';
+  locationCaseRef = null;
+
   // initialize Firebase Backend
   constructor() {
     firebase.initializeApp({
@@ -46,6 +49,13 @@ class FirebaseService {
     this.myID = id;
   }
 
+  setCaseID(id) {
+    this.caseId = id;
+  }
+  setMyInCaseID(id) {
+    this.myInCase = id;
+  }
+
   trackingLocation(callback) {
     this.locationRef = firebase.database().ref(this.teamID);
     // this.locationRef.off();
@@ -66,12 +76,45 @@ class FirebaseService {
     });
   }
 
+  trackingLocationInCase(callback) {
+    this.locationCaseRef = firebase.database().ref(this.caseId);
+    // this.locationRef.off();
+    // const onReceive = data => {
+    //   const message = data.val();
+    //   callback({ message });
+    //   alert(JSON.stringify(message));
+    // };
+    // this.messagesRef
+    //   //.startAt(d)
+    //   //.endAt("2017-11-27T06:51:47.851Z")
+    //   .on('child_added', onReceive);
+
+    this.locationCaseRef.on('value', location => {
+      const message = location.val();
+      // snapshot.val() is the dictionary with all your keys/values from the '/store' path
+      callback({ message });
+    });
+  }
+
   sendLocation(location, user) {
     this.locationRef = firebase.database().ref(this.myID);
     //console.log(new Date(firebase.database.ServerValue.TIMESTAMP));
     /* today.setDate(today.getDate() - 30);
     var timestamp = new Date(today).toISOString(); */
     this.locationRef.push({
+      longitude: location.longitude,
+      latitude: location.latitude,
+      createdAt: moment().format(),
+      user: user,
+    });
+  }
+
+  sendLocationInCase(location, user) {
+    this.locationCaseRef = firebase.database().ref(this.myInCase);
+    //console.log(new Date(firebase.database.ServerValue.TIMESTAMP));
+    /* today.setDate(today.getDate() - 30);
+    var timestamp = new Date(today).toISOString(); */
+    this.locationCaseRef.push({
       longitude: location.longitude,
       latitude: location.latitude,
       createdAt: moment().format(),
@@ -182,7 +225,6 @@ class FirebaseService {
   }
 
   uploadImage(image, mime = 'application/octet-stream') {
-    console.log('1');
     return new Promise((resolve, reject) => {
       const imageRef = firebase
         .storage()
@@ -200,6 +242,8 @@ class FirebaseService {
           resolve(url);
         })
         .catch(error => {
+          console.log('6');
+
           reject(error);
         });
     });

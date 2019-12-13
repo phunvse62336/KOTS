@@ -78,10 +78,9 @@ export default class Member extends Component {
             <Text style={{ fontWeight: 'bold' }}>Chức vụ: </Text>
             <Text
               style={{
-                color:
-                  item.id === this.props.leaderId ? Colors.appColor : 'black',
+                color: item.isLeader === 1 ? Colors.appColor : 'black',
               }}>
-              {item.id === this.props.leaderId ? 'Đội trưởng' : 'Đội viên'}
+              {item.isLeader === 1 ? 'Đội trưởng' : 'Đội viên'}
             </Text>
           </View>
         </View>

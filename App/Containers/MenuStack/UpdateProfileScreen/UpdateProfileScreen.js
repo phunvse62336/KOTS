@@ -100,6 +100,12 @@ export default class UpdateProfileScreen extends Component {
         token,
         dateOfBirth,
         null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
       );
       if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
         console.log(JSON.stringify(responseStatus));

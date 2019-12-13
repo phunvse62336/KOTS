@@ -29,6 +29,12 @@ export class Team extends Component {
       this.state.token,
       null,
       this.state.item.id,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
     );
 
     if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {

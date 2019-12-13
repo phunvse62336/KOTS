@@ -63,3 +63,5 @@ export const IGNORE_KNIGHT = BASE_URL + 'ignoreKnight';
 export const REQUEST_LEAVE_KNIGHT = BASE_URL + 'requestLeaveTeam';
 
 export const CREATE_TEAM = BASE_URL + 'createTeam';
+
+export const REPORT_CASE = BASE_URL + 'reportCase';

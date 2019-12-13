@@ -20,86 +20,6 @@ import { HeaderUI, Member } from '../../../Components';
 import { Colors } from '../../../Themes';
 const { width, height } = Dimensions.get('window');
 
-const DATA = {
-  id: 1,
-  leaderId: '0971930498',
-  name: 'Con Chim Non',
-  created_at: '2019-11-08 19:00:00',
-  updated_at: '2019-11-08 19:00:00',
-  address: 'Gò Vấp, Hồ Chí Minh',
-  leaderName: 'Hiệp sĩ trong tay có kiếm',
-  knight: [
-    {
-      id: '0362293456',
-      name: 'Nguyễn Phú Phát',
-      address: 'Bình Phước, Hồ Chí Minh',
-      status: 0,
-      gender: 'male',
-      dateOfBirth: null,
-      token: '1234',
-      isDisable: 0,
-      role: 2,
-      image: 'images/default-avatar.png',
-      isFirstLogin: 0,
-      team_id: 1,
-      password: null,
-      created_at: '2019-10-20 14:54:15',
-      updated_at: '2019-10-20 14:54:15',
-    },
-    {
-      id: '0906393976',
-      name: 'Bất Động Sản',
-      address: 'Hóc Môn, Hồ Chí Minh',
-      status: 1,
-      gender: 'male',
-      dateOfBirth: '1997-12-10',
-      token: '1234',
-      isDisable: 0,
-      role: 1,
-      image: 'images/default-avatar.png',
-      isFirstLogin: 0,
-      team_id: 1,
-      password: null,
-      created_at: '2019-10-24 17:05:35',
-      updated_at: '2019-11-05 07:31:40',
-    },
-    {
-      id: '0971930444',
-      name: 'Bds',
-      address: 'Nds',
-      status: 0,
-      gender: '1',
-      dateOfBirth: '1970-01-01',
-      token: '',
-      isDisable: 0,
-      role: 2,
-      image: 'images/default-avatar.png',
-      isFirstLogin: 0,
-      team_id: 1,
-      password: null,
-      created_at: '2019-11-08 13:14:14',
-      updated_at: '2019-11-08 13:27:34',
-    },
-    {
-      id: '0971930498',
-      name: 'Hiệp sĩ trong tay có kiếm',
-      address: 'Hóc Môn, Hồ Chí Minh',
-      status: 2,
-      gender: '1',
-      dateOfBirth: '1997-03-10',
-      token: '',
-      isDisable: 0,
-      role: 2,
-      image: 'images/default-avatar.png',
-      isFirstLogin: 0,
-      team_id: 1,
-      password: null,
-      created_at: '2019-10-19 03:00:00',
-      updated_at: '2019-11-11 13:58:22',
-    },
-  ],
-};
-
 export class GroupScreenStyles extends Component {
   constructor(props) {
     super(props);
@@ -116,11 +36,7 @@ export class GroupScreenStyles extends Component {
   }
 
   _renderItem = ({ item, index }) => (
-    <Member
-      item={item}
-      leaderId={this.state.data.leaderId}
-      phone={this.state.phoneNumber}
-    />
+    <Member item={item} phone={this.state.phoneNumber} />
   );
 
   async componentDidMount() {
@@ -131,8 +47,7 @@ export class GroupScreenStyles extends Component {
     if (responseStatus.result === MESSAGES.CODE.SUCCESS_CODE) {
       this.setState({
         phoneNumber: phoneNumber,
-        user: JSON.parse(user),
-
+        user: userJson,
         data: responseStatus.data,
         spinner: false,
       });
@@ -191,7 +106,7 @@ export class GroupScreenStyles extends Component {
         }}>
         <HeaderUI
           title="Tổ Đội"
-          leaderId={this.state.data === null ? null : this.state.data.leaderId}
+          isLeader={this.state.user.isLeader}
           navigation={this.props.navigation}
           teamId={this.state.data.id}
         />

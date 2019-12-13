@@ -25,6 +25,7 @@ import SOSScreen from '../Containers/SOSStack/SOSScreen/SOSScreen';
 import SOSDetailScreen from '../Containers/SOSStack/SOSDetailScreen/SOSDetailScreen';
 import SOSMessageScreen from '../Containers/SOSStack/SOSMessageScreen/SOSMessageScreen';
 import SOSVoiceChatScreen from '../Containers/SOSStack/SOSVoiceChatScreen/SOSVoiceChatScreen';
+import CaseReportScreen from '../Containers/SOSStack/CaseReportScreen/CaseReportScreen';
 
 import MenuScreen from '../Containers/MenuStack/MenuScreen/MenuScreen';
 import PoliceScreen from '../Containers/MenuStack/PoliceScreen/PoliceScreen';
@@ -169,6 +170,14 @@ const SOSTabStack = createStackNavigator({
       header: null,
     },
   },
+  CaseReportScreen: {
+    screen: CaseReportScreen,
+    navigationOptions: {
+      headerTitle: 'Báo cáo sự cố',
+      headerTintColor: Colors.appColor,
+      headerTitleStyle: { color: Colors.appColor, fontWeight: 'bold' },
+    },
+  },
 });
 
 const GroupTabStack = createStackNavigator({
@@ -278,7 +287,7 @@ const SwitchNavigation = createSwitchNavigator(
     JoinOrCreate,
   },
   {
-    initialRouteName: 'AuthNavigator',
+    initialRouteName: 'AuthLoading',
   },
 );
 
